@@ -5,7 +5,7 @@ import os
 from datetime import datetime
 import pandas as pd
 import re
-import smart_value.stocks
+import smart_value.stock
 
 
 def new_stock_model(ticker):
@@ -61,7 +61,7 @@ def update_stock_model(ticker, model_name, model_path, new_bool):
     :param new_bool: False if there is a model exists, true otherwise
     """
 
-    company = smart_value.stocks.Stock(ticker, "yf")  # uses yahoo finance data by default
+    company = smart_value.stock.Stock(ticker, "yf")  # uses yahoo finance data by default
 
     # update the new model
     print(f'Updating {model_name}...')
@@ -73,7 +73,7 @@ def update_stock_model(ticker, model_name, model_path, new_bool):
         model_xl.close()
 
 
-def update_dashboard(dash_sheet, stock, new_bool):
+def update_dashboard(dash_sheet, stock, new_bool=False):
     """Update the Dashboard sheet.
 
     :param dash_sheet: the xlwings object of the model
@@ -82,17 +82,17 @@ def update_dashboard(dash_sheet, stock, new_bool):
     """
 
     if new_bool:
-        dash_sheet.range('C3').value = stock.security_code
+        dash_sheet.range('C3').value = stock.asset_code
         dash_sheet.range('C4').value = stock.name
         dash_sheet.range('C5').value = datetime.today().strftime('%Y-%m-%d')
         dash_sheet.range('I3').value = stock.exchange
         dash_sheet.range('I11').value = stock.report_currency
 
     if pd.to_datetime(dash_sheet.range('C5').value) > pd.to_datetime(dash_sheet.range('C6').value):
-        stock.val_status = "Outdated"
+        stock.is_updated = False
     else:
-        stock.val_status = ""
-    dash_sheet.range('E6').value = stock.val_status
+        stock.is_updated = True
+    dash_sheet.range('E6').value = stock.is_updated
     dash_sheet.range('I4').value = stock.price[0]
     dash_sheet.range('J4').value = stock.price[1]
     dash_sheet.range('I5').value = stock.shares

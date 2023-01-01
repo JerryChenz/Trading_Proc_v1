@@ -1,9 +1,9 @@
-from smart_value.securities import *
+from smart_value.asset import *
 from smart_value.financial_data import yahoo_data as yh
 from smart_value.financial_data import exchange_rate as fx
 
 
-class Stock(Securities):
+class Stock(Asset):
     """a type of Securities"""
 
     def __init__(self, security_code, source="yf"):
@@ -23,7 +23,7 @@ class Stock(Securities):
     def load_from_yf(self):
         """Scrap the financial_data from yfinance API"""
 
-        ticker_data = yh.Financials(self.security_code)
+        ticker_data = yh.Financials(self.asset_code)
 
         self.name = ticker_data.name
         self.price = ticker_data.price

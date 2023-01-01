@@ -1,4 +1,4 @@
-import smart_value.securities
-import smart_value.stocks
+import smart_value.asset
+import smart_value.stock
 import smart_value.financial_data
 import smart_value.tools

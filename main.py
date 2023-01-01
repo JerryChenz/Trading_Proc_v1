@@ -8,10 +8,10 @@ def gen_val_xlsx(ticker):
     smart_value.tools.stock_model.new_stock_model(ticker)
 
 
-def update_pipeline_monitor():
+def update_monitor():
     """Update the pipeline monitor"""
 
-    o = smart_value.tools.monitor.Pipeline()
+    o = smart_value.tools.monitor.Monitor()
     o.load_opportunities()
 
 
@@ -25,4 +25,4 @@ if __name__ == '__main__':
     stare_list = ['0806.HK']
     for s in stare_list:
         gen_val_xlsx(s)
-    # update_pipeline_monitor()
+    # update_monitor()
