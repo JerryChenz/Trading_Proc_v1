@@ -2,7 +2,7 @@
 Multi-assets Investment Management tool for potential oppertunities and current holdings.
 
 Purpose and Aim:
-1. To automate the boring tasks of getting informaiton in the company financial statements;
+1. To automate the boring tasks of getting informaiton in the company financial statements and market price information;
 2. To screen stock based on custom conditions featuring capbility beyond the available stock screener;
 3. To visualizes and compare all the investments opportunities (inclduing cross-assets comparison);
 4. To manage and update all the financial models;
