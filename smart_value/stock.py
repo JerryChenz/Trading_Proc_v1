@@ -10,7 +10,7 @@ class Stock(Asset):
     def __init__(self, asset_code, source="yf"):
         """
         :param asset_code: string ticker of the stock
-        :param source: "yf" chooses yahoo finance
+        :param source: data source selector. "yf" selects yahoo finance
         """
         super().__init__(asset_code)
 
