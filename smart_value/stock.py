@@ -17,7 +17,7 @@ class Stock(Asset):
         self.invest_horizon = 3  # 3 years holding period for stock by default
         self.report_currency = None
         self.is_df = None
-        self.bs_df = None # annual data, latest quarter data needed
+        self.bs_df = None  # annual data, latest quarter data needed
         self.fx_rate = None
         self.source = source
         self.load_data()
@@ -60,13 +60,13 @@ class Stock(Asset):
         # transpose the DataFrame to one row
         stock_summary.transpose()
         # rename the column names to prevent KeyError due to different data sources
-        stock_summary.columns = ['TotalAssets', 'CurrentAssets','CurrentLiabilities',
-                                 'CurrentDebtAndCapitalLeaseObligation','CurrentCapitalLeaseObligation',
-                                 'LongTermDebtAndCapitalLeaseObligation','LongTermCapitalLeaseObligation',
-                                 'TotalEquityGrossMinorityInterest','MinorityInterest','CashAndCashEquivalents',
-                                 'OtherShortTermInvestments','InvestmentProperties','LongTermEquityInvestment',
-                                 'InvestmentinFinancialAssets','NetPPE','TotalRevenue','CostOfRevenue',
-                                 'SellingGeneralAndAdministration','InterestExpense','NetIncomeCommonStockholders']
+        stock_summary.columns = ['TotalAssets', 'CurrentAssets', 'CurrentLiabilities',
+                                 'CurrentDebtAndCapitalLeaseObligation', 'CurrentCapitalLeaseObligation',
+                                 'LongTermDebtAndCapitalLeaseObligation', 'LongTermCapitalLeaseObligation',
+                                 'TotalEquityGrossMinorityInterest', 'MinorityInterest', 'CashAndCashEquivalents',
+                                 'OtherShortTermInvestments', 'InvestmentProperties', 'LongTermEquityInvestment',
+                                 'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'CostOfRevenue',
+                                 'SellingGeneralAndAdministration', 'InterestExpense', 'NetIncomeCommonStockholders']
         # ticker and dividend
         stock_summary.insert(loc=0, column='Ticker', value=self.asset_code)
         stock_summary['Name'] = self.name

@@ -42,9 +42,22 @@ def load_filters(csv_file):
     """
 
     df = pd.read_csv(csv_file)
-    capitalization = df['Price'] * df['Shares']
-    enterprise_value = capitalization
-    liquidity_coverage_ratio = 0
+    # capitalization in reporting currency
+    capitalization = df['Price'] * df['Shares'] * df['Fx_rate']
+    print(capitalization)
+    total_debt = df['CurrentDebtAndCapitalLeaseObligation'] + df['LongTermDebtAndCapitalLeaseObligation']
+    print(total_debt)
+    enterprise_value = capitalization + total_debt + df['MinorityInterest'] - df['CashAndCashEquivalents']
+    # more easily realizable non-operating assets
+    monetary_assets = df['OtherShortTermInvestments'] + df['InvestmentinFinancialAssets']
+    # less easily realizable non-operating assets
+    fixed_nonop_assets = (df['InvestmentProperties'] + df['LongTermEquityInvestment']) * 0.5
+    # liquidity_coverage_ratio
+    lcr = monetary_assets / df['CurrentLiabilities']
     current_ratio = df['CurrentAssets'] / df['CurrentLiabilities']
 
-    condition_1 = df['Cash'] > df['Debt']
+    # filter conditions
+    condition_1 = df['CashAndCashEquivalents'] > df['CurrentDebtAndCapitalLeaseObligation']
+    condition_2 = lcr >= 1
+
+    print(df.loc[condition_1 & condition_2])
