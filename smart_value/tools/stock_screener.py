@@ -26,7 +26,7 @@ def liquidity_coverage(stock):
 
     :param stock: Stock object
     :return: the Liquidity Coverage ratio
-    :rtype: integer
+    :rtype: Integer
     """
 
     lcr = 1
@@ -57,15 +57,9 @@ class StockScreener:
         for ticker in self.tickers:
             try:
                 company = smart_value.stock.Stock(ticker)
-                new_row = {'Ticker': ticker,
-                           'Market cap': capitalization,
-                           'Cash': company.bs_df.iloc['CashAndCashEquivalents'],
-                           'Debt': debt,
-                           'Investments': investments,
-                           'Enterprise value': ev,
-                           'Net income': net_inc,
-                           'Forecasted growth': forecasted_growth,
-                           'Dividend yield': div_yield}
+                # balance sheet information
+                new_row = company.bs_df.iloc[:,:1]
+
 
                 self.summary.append(new_row, ignore_index=True)
                 print(ticker + ' added.')
@@ -73,8 +67,11 @@ class StockScreener:
                 print(ticker + ': Something went wrong.')
         self.summary['PE'] = self.summary['Enterprise value'] / self.summary['Net income']
         self.summary['LCR'] = liquidity_coverage('')
-        self.summary['PEG'] = summary['PE'] / summary['D+G']
+        self.summary['PEG'] = self.summary['PE'] / self.summary['D+G']
         self.summary.to_csv('summary.csv')
+
+        # insert the tickers list at the first column index in pandas
+        self.summary.insert(loc=0, column='Ticker',value=self.tickers)
 
     def filter(self):
         """
