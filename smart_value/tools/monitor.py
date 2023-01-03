@@ -48,7 +48,7 @@ def read_stock(dash_sheet):
     company.risk_premium = dash_sheet.range('H17').value
     company.is_updated = dash_sheet.range('E6').value
     company.periodic_payment = dash_sheet.range('I13').value
-    company.next_earnings = dash_sheet.range('C6').value
+    company.last_fy = dash_sheet.range('C6').value
     company.invest_horizon = 3  # default 3 years holding period for stocks
     return company
 
@@ -126,7 +126,7 @@ class Monitor:
             monitor_sheet.range((r, 9)).value = a.periodic_payment
             monitor_sheet.range((r, 10)).value = f'=I{r}/E{r}'
             monitor_sheet.range((r, 11)).value = a.ideal_price
-            monitor_sheet.range((r, 12)).value = a.next_earnings
+            monitor_sheet.range((r, 12)).value = a.last_fy
             monitor_sheet.range((r, 13)).value = a.invest_horizon
             monitor_sheet.range((r, 14)).value = a.is_updated
             r += 1

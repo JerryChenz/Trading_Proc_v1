@@ -1,38 +1,12 @@
 import smart_value.stock
 import pandas as pd
+import pathlib
 
 '''
 Two ways to create a screener:
 1. Create a filter while gathering the data.
 2. Collect data & filter based on multiple criteria afterwards. (preferred and used here)
 '''
-
-
-def enterprise_value(stock):
-    """Return the stock's Enterprise value.
-
-    :param stock: Stock object
-    :return: the Enterprise Value
-    :rtype: integer
-    """
-
-    ev = 1
-
-    return ev
-
-
-def liquidity_coverage(stock):
-    """Return the stock's Liquidity Coverage ratio.
-
-    :param stock: Stock object
-    :return: the Liquidity Coverage ratio
-    :rtype: Integer
-    """
-
-    lcr = 1
-
-    return lcr
-
 
 class StockScreener:
     """A Python stock screener"""
@@ -44,35 +18,41 @@ class StockScreener:
         self.tickers = tickers
         # Output in a dataframe
         self.summary = None
-        self.collect_data(source)
+        self.source = source
+        self.condition_1 = True
+        self.condition_2 = True
+        self.condition_3 = True
+        self.condition_4 = True
+        self.condition_5 = True
 
     def collect_data(self, source):
-        """Return the stock data in the screener format above and appends to the summary.
+        """Return the stock data in the screener format above and appends to the summary."""
 
-        :return: self.summary - the screener output
-        :rtype: DataFrame
-        """
-
+        data = None
         for ticker in self.tickers:
-            try:
-                company = smart_value.stock.Stock(ticker, source)
-                print(company)
-                new_row = company.present_data()
+            company = smart_value.stock.Stock(ticker, source)
+            new_row = company.present_data()
+            if data is None:
+                data = new_row
+            else:
+                self.summary = pd.concat([data,new_row])
+            print(ticker + ' added.')
 
-                self.summary.append(new_row, ignore_index=True)
-                print(ticker + ' added.')
-            except:
-                print(ticker + ': Something went wrong.')
-        # self.summary['PE'] = self.summary['Enterprise value'] / self.summary['Net income']
-        # self.summary['LCR'] = liquidity_coverage('')
-        # self.summary['PEG'] = self.summary['PE'] / self.summary['D+G']
-        # insert the tickers list at the first column index in pandas
-        self.summary.insert(loc=0, column='Ticker', value=self.tickers)
-        self.summary.to_csv(f'screener_summary v{pd.Timestamp("today").strftime("%m/%d/%Y")}.csv')
+        cwd = pathlib.Path.cwd().resolve()
+        monitor_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
+        self.summary.to_csv(monitor_folder / 'screener_summary.csv')
 
-    def filter(self):
-        """
+    def load_filters(self, csv_file):
+        """Filter the data sorted in csv based on multiple criteria.
 
+        :param csv_file: Collected data in csv format
         :return: the list of screener result
         """
-        condition_1 = self.summary['Cash'] > self.summary['Debt']
+
+        df = pd.read_csv(csv_file)
+        enterprise_value = 0
+        liquidity_coverage_ratio = 0
+        current_ratio = df['CurrentAssets']/df['CurrentLiabilities']
+
+
+        self.condition_1 = df['Cash'] > df['Debt']

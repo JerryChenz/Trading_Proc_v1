@@ -14,7 +14,7 @@ class Asset:
         self.risk_premium = None
         self.is_updated = None
         self.periodic_payment = None  # dividend for stocks and coupon for bonds
-        self.next_earnings = None  # next coupon date for bonds
+        self.last_fy = None  # last coupon date for bonds
         self.invest_horizon = None
         self.unit_cost = None
         self.total_units = None

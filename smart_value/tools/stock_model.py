@@ -106,7 +106,7 @@ def update_data(data_sheet, stock):
     :param stock: the Stock object
     """
 
-    data_sheet.range('C3').value = stock.is_df.columns[0]  # last financial year
+    data_sheet.range('C3').value = stock.last_fy
     if len(str(stock.is_df.iloc[0, 0])) <= 6:
         report_unit = 1
     elif len(str(stock.is_df.iloc[0, 0])) <= 9:
