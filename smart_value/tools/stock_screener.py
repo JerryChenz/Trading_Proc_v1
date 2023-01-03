@@ -37,17 +37,16 @@ def liquidity_coverage(stock):
 class StockScreener:
     """A Python stock screener"""
 
-    def __init__(self, tickers):
+    def __init__(self, tickers, source = "yf"):
         """
         :param tickers: a list of tickers to screen through
         """
         self.tickers = tickers
         # Output in a dataframe
-        self.summary = pd.DataFrame(columns=['Ticker', 'Market cap', 'Net income',
-                                             'Cash', 'Debt', 'Investments', 'Enterprise value',
-                                             'Forecasted growth', 'Dividend yield'])
+        self.summary = None
+        self.collect_data(source)
 
-    def collect_data(self):
+    def collect_data(self, source):
         """Return the stock data in the screener format above and appends to the summary.
 
         :return: self.summary - the screener output
@@ -56,20 +55,19 @@ class StockScreener:
 
         for ticker in self.tickers:
             try:
-                company = smart_value.stock.Stock(ticker)
+                company = smart_value.stock.Stock(ticker, source)
                 new_row = company.present_data()
 
                 self.summary.append(new_row, ignore_index=True)
                 print(ticker + ' added.')
             except:
                 print(ticker + ': Something went wrong.')
-        self.summary['PE'] = self.summary['Enterprise value'] / self.summary['Net income']
-        self.summary['LCR'] = liquidity_coverage('')
-        self.summary['PEG'] = self.summary['PE'] / self.summary['D+G']
-        self.summary.to_csv('summary.csv')
-
+        # self.summary['PE'] = self.summary['Enterprise value'] / self.summary['Net income']
+        # self.summary['LCR'] = liquidity_coverage('')
+        # self.summary['PEG'] = self.summary['PE'] / self.summary['D+G']
         # insert the tickers list at the first column index in pandas
         self.summary.insert(loc=0, column='Ticker', value=self.tickers)
+        self.summary.to_csv(f'screener_summary v{pd.Timestamp("today").strftime("%m/%d/%Y")}.csv')
 
     def filter(self):
         """

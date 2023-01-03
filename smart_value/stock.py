@@ -19,6 +19,15 @@ class Stock(Asset):
         self.bs_df = None
         self.fx_rate = None
         self.source = source
+        self.load_data()
+
+    def load_data(self):
+        """data source selector."""
+
+        if self.source == "yf":
+            self.load_from_yf()
+        else:
+            pass  # Other sources of data to-be-implemented
 
     def load_from_yf(self):
         """Scrap the financial_data from yfinance API"""
@@ -34,14 +43,6 @@ class Stock(Asset):
         self.periodic_payment = ticker_data.dividends
         self.is_df = ticker_data.income_statement
         self.bs_df = ticker_data.balance_sheet
-
-    def load_data(self):
-        """data source selector."""
-
-        if self.source == "yf":
-            self.load_from_yf()
-        else:
-            pass  # Other sources of data to-be-implemented
 
     def present_data(self):
         """ Return a summary of all the key stock data.
