@@ -56,6 +56,7 @@ class StockScreener:
         for ticker in self.tickers:
             try:
                 company = smart_value.stock.Stock(ticker, source)
+                print(company)
                 new_row = company.present_data()
 
                 self.summary.append(new_row, ignore_index=True)

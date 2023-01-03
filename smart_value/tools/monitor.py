@@ -54,16 +54,17 @@ def read_stock(dash_sheet):
 
 
 class Monitor:
-    """A pipeline with many opportunities"""
+    """A Monitor with many opportunities"""
 
     def __init__(self):
         self.opportunities = []
+        self.load_opportunities()
 
     def load_opportunities(self):
         """Load the asset information from the opportunities folder"""
 
         # Copy the latest Valuation template
-        opportunities_folder_path = pathlib.Path.cwd().resolve() / 'Opportunities'
+        opportunities_folder_path = pathlib.Path.cwd().resolve() / 'financial_models' / 'Opportunities'
         r = re.compile(".*Valuation_v")
 
         try:
@@ -87,30 +88,30 @@ class Monitor:
                 print(f"Working with {opportunities_path}...")
                 self.opportunities.append(read_opportunity(opportunities_path))
             # load the opportunities
-            monitor_file_path = opportunities_folder_path / 'Pipeline_monitor' / 'Pipeline_monitor.xlsx'
-            print("Updating Pipeline_monitor...")
-            self.update_pipeline(monitor_file_path)
+            monitor_file_path = opportunities_folder_path / 'Monitor' / 'Monitor.xlsx'
+            print("Updating Monitor...")
+            self.update_monitor(monitor_file_path)
 
-    def update_pipeline(self, monitor_file_path):
-        """Update the Pipeline_monitor file
+    def update_monitor(self, monitor_file_path):
+        """Update the Monitor file
 
         :param monitor_file_path: the path of the Monitor file
         """
 
         with xlwings.App(visible=False) as app:
             pipline_book = app.books.open(monitor_file_path)
-            self.update_monitor(pipline_book)
+            self.update_opportunities(pipline_book)
             self.update_holdings(pipline_book)
             pipline_book.save(monitor_file_path)
             pipline_book.close()
 
-    def update_monitor(self, pipline_book):
-        """Update the monitor sheet in the Pipeline_monitor file
+    def update_opportunities(self, pipline_book):
+        """Update the opportunities sheet in the Pipeline_monitor file
 
         :param pipline_book: xlwings book object
         """
 
-        monitor_sheet = pipline_book.sheets('Monitor')
+        monitor_sheet = pipline_book.sheets('Opportunities')
         monitor_sheet.range('B5:N200').clear_contents()
 
         r = 5

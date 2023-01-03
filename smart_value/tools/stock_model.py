@@ -60,13 +60,12 @@ def update_stock_model(ticker, model_name, model_path, new_bool):
     :param model_path: the model file path
     :param new_bool: False if there is a model exists, true otherwise
     """
-
-    company = smart_value.stock.Stock(ticker, "yf")  # uses yahoo finance data by default
-
     # update the new model
     print(f'Updating {model_name}...')
+    company = smart_value.stock.Stock(ticker, "yf")  # uses yahoo finance data by default
+
     with xlwings.App(visible=False) as app:
-        model_xl = xlwings.Book(model_path)
+        model_xl = app.books.open(model_path)
         update_dashboard(model_xl.sheets('Dashboard'), company, new_bool)
         update_data(model_xl.sheets('Data'), company)
         model_xl.save(model_path)
