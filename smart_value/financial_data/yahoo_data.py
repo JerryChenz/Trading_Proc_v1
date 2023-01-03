@@ -69,9 +69,3 @@ class Financials:
         # Ending of Cleaning: drop the dummy column after join
 
         return is_df.fillna(0)
-
-    def csv_statements(self):
-        """Export the income statement and balance sheet in csv format"""
-
-        self.income_statement.to_csv(f'{self.ticker}_income_statement.csv', sep=',', encoding='utf-8')
-        self.balance_sheet.to_csv(f'{self.ticker}_balance_sheet.csv', sep=',', encoding='utf-8')

@@ -42,3 +42,24 @@ class Stock(Asset):
             self.load_from_yf()
         else:
             pass  # Other sources of data to-be-implemented
+
+    def present_data(self):
+        """ Return a summary of all the key stock data.
+
+        :return: All key stock data in one DataFrame
+        """
+
+        # balance sheet information
+        stock_summary = self.bs_df.iloc[:, :1]
+        # dividend
+        stock_summary.insert(loc=-1, column='', value=self.periodic_payment)
+
+        return stock_summary
+
+    def csv_statements(self, df):
+        """Export the DataFrame in csv format.
+
+        :param df: a DataFrame containing stock data
+        """
+
+        df.to_csv(f'{self.asset_code}_{df.name}.csv', sep=',', encoding='utf-8')

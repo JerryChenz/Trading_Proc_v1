@@ -57,9 +57,7 @@ class StockScreener:
         for ticker in self.tickers:
             try:
                 company = smart_value.stock.Stock(ticker)
-                # balance sheet information
-                new_row = company.bs_df.iloc[:,:1]
-
+                new_row = company.present_data()
 
                 self.summary.append(new_row, ignore_index=True)
                 print(ticker + ' added.')
@@ -71,7 +69,7 @@ class StockScreener:
         self.summary.to_csv('summary.csv')
 
         # insert the tickers list at the first column index in pandas
-        self.summary.insert(loc=0, column='Ticker',value=self.tickers)
+        self.summary.insert(loc=0, column='Ticker', value=self.tickers)
 
     def filter(self):
         """
