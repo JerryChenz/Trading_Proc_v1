@@ -83,7 +83,7 @@ class Stock(Asset):
         stock_summary.insert(loc=8, column='Dividend', value=self.periodic_payment)
         stock_summary.insert(loc=9, column='Last_fy', value=self.last_fy)
 
-        return stock_summary.set_index('Ticker')
+        return stock_summary
 
     def csv_statements(self, df):
         """Export the DataFrame in csv format.

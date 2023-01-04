@@ -51,7 +51,7 @@ def company_data(ticker, source):
     try:
         company = smart_value.stock.Stock(ticker, source)
         # export the summary
-        new_row = company.current_summary()
+        new_row = company.current_summary().transpose()
         new_row.to_json(json_dir / f'{ticker} data.json')
     except IndexError:
         try_count += 1
@@ -75,15 +75,22 @@ def merge_data():
     monitor_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
 
     json_pattern = os.path.join(json_dir, '*.json')
-    file_list = glob.glob(json_pattern)
+    files = glob.glob(json_pattern)
 
-    dfs = []
-    for file in file_list:
-        with open(file) as f:
-            json_data = pd.json_normalize(json.loads(f.read()))
-            json_data['site'] = file.rsplit("/", 1)[-1]
-        dfs.append(json_data)
-    df = pd.concat(dfs)
+    dfs = []  # an empty list to store the data frames
+    for file in files:
+        data = pd.read_json(file)  # read data frame from json file
+        dfs.append(data.transpose())  # append the data frame to the list
+
+    df = pd.concat(dfs, ignore_index=False) # concatenate all the data frames in the list.
+    df = df[['Ticker','Name','Exchange','Price','Price_currency','Shares','Reporting_Currency','Fx_rate','Dividend',
+             'Last_fy','TotalAssets', 'CurrentAssets', 'CurrentLiabilities',
+             'CurrentDebtAndCapitalLeaseObligation', 'CurrentCapitalLeaseObligation',
+             'LongTermDebtAndCapitalLeaseObligation', 'LongTermCapitalLeaseObligation',
+             'TotalEquityGrossMinorityInterest', 'MinorityInterest', 'CashAndCashEquivalents',
+             'OtherShortTermInvestments', 'InvestmentProperties', 'LongTermEquityInvestment',
+             'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'CostOfRevenue',
+             'SellingGeneralAndAdministration', 'InterestExpense', 'NetIncomeCommonStockholders']].set_index('Ticker')
     df.to_csv(monitor_folder / 'screener_summary.csv')
 
 # Step 2: filter
