@@ -19,21 +19,25 @@ def collect_data(tickers, source):
     :rtype: DataFrame
     """
 
-    summary = None
+    cwd = pathlib.Path.cwd().resolve()
+    data_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor' / 'data'
+
+    # summary = None
     for ticker in tickers:
         company = smart_value.stock.Stock(ticker, source)
+        # export the summary
         new_row = company.current_summary()
-        if summary is None:
-            summary = new_row
-        else:
-            summary = pd.concat([summary, new_row])
+        new_row.to_json(data_folder / f'{ticker} data.json')
+        # if summary is None:
+        #     summary = new_row
+        # else:
+        #     summary = pd.concat([summary, new_row])
         print(ticker + ' added.')
 
     # export the summary
-    cwd = pathlib.Path.cwd().resolve()
-    monitor_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
-    summary.to_csv(monitor_folder / 'screener_summary.csv')
-    return summary
+    # monitor_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
+    # summary.to_csv(monitor_folder / 'screener_summary.csv')
+    # return summary
 
 
 # Step 2: filter

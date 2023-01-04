@@ -18,12 +18,16 @@ class Financials:
         self.exchange = self.stock_data.info['exchange']
         self.shares = self.stock_data.info['sharesOutstanding']
         self.report_currency = self.stock_data.info['financialCurrency']
-        self.dividends = -int(self.stock_data.get_cashflow().fillna(0).loc['CommonStockDividendPaid'][0]) / self.shares
         self.next_earnings = pd.to_datetime(datetime.fromtimestamp(self.stock_data.info['mostRecentQuarter'])
                                             .strftime("%Y-%m-%d")) + pd.DateOffset(months=6)
         self.annual_bs = self.get_balance_sheet("annual")
         self.quarter_bs = self.get_balance_sheet("quarter")
         self.income_statement = self.get_income_statement()
+        self.cash_flow = self.get_cash_flow()
+        try:
+            self.dividends = -int(self.cash_flow.loc['CommonStockDividendPaid'][0]) / self.shares
+        except ZeroDivisionError:
+            self.dividends = 0
 
     def get_balance_sheet(self, option):
         """Returns a DataFrame with selected balance sheet data"""
@@ -74,3 +78,18 @@ class Financials:
         is_df.drop('Dummy', inplace=True, axis=1)
 
         return is_df.fillna(0)
+
+    def get_cash_flow(self):
+        """Returns a DataFrame with selected Cash flow statement data"""
+
+        cash_flow = self.stock_data.get_cashflow()
+        # Start of Cleaning: make sure the data has all the required indexes
+        dummy = {"Dummy": [None]}
+        cf_index = ['CommonStockDividendPaid']
+        dummy_df = pd.DataFrame(dummy, index=cf_index)
+        clean_cf = dummy_df.join(cash_flow)
+        cf_df = clean_cf.loc[cf_index]
+        # Ending of Cleaning: drop the dummy column after join
+        cf_df.drop('Dummy', inplace=True, axis=1)
+
+        return cf_df.fillna(0)
