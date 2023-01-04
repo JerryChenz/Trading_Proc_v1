@@ -24,7 +24,7 @@ def collect_data(tickers, source):
         company = smart_value.stock.Stock(ticker, source)
         new_row = company.current_summary()
         if summary is None:
-            data = new_row
+            summary = new_row
         else:
             summary = pd.concat([summary, new_row])
         print(ticker + ' added.')

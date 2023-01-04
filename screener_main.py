@@ -9,7 +9,7 @@ def screener_data():
     :rtype: DataFrame
     """
 
-    companies = ['0806.HK', '1475.HK']
+    companies = ['0806.HK']
     return screener.collect_data(companies, "yf")
 
 if __name__ == '__main__':

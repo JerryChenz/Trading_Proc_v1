@@ -56,12 +56,14 @@ class Stock(Asset):
 
         # balance sheet and income statement information
         current_bs = self.quarter_bs.iloc[:, :1]
+        # standardize the column name to enable concat
+        current_bs.columns = [self.last_fy]
         current_is = self.is_df.iloc[:, :1]
         # concat 2 Series column-wise
         stock_summary = pd.concat([current_bs, current_is]).T
         # transpose the DataFrame to one row
         stock_summary.transpose()
-        # rename the column names to prevent KeyError due to different data sources
+        # standardize the column names to prevent KeyError due to different data sources
         stock_summary.columns = ['TotalAssets', 'CurrentAssets', 'CurrentLiabilities',
                                  'CurrentDebtAndCapitalLeaseObligation', 'CurrentCapitalLeaseObligation',
                                  'LongTermDebtAndCapitalLeaseObligation', 'LongTermCapitalLeaseObligation',
