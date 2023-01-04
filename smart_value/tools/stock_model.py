@@ -122,12 +122,12 @@ def update_data(data_sheet, stock):
         data_sheet.range((17, i + 3)).value = int(stock.is_df.iloc[3, i] / report_unit)
         data_sheet.range((18, i + 3)).value = int(stock.is_df.iloc[4, i] / report_unit)
     # load balance sheet
-    for i in range(1, len(stock.bs_df.columns)):
-        data_sheet.range((20, i + 3)).value = int(stock.bs_df.iloc[0, i] / report_unit)
-        data_sheet.range((21, i + 3)).value = int(stock.bs_df.iloc[1, i] / report_unit)
-        data_sheet.range((22, i + 3)).value = int(stock.bs_df.iloc[2, i] / report_unit)
-        data_sheet.range((23, i + 3)).value = int(stock.bs_df.iloc[3, i] / report_unit)
-        data_sheet.range((25, i + 3)).value = int(stock.bs_df.iloc[4, i] / report_unit)
-        data_sheet.range((26, i + 3)).value = int(stock.bs_df.iloc[5, i] / report_unit)
-        data_sheet.range((27, i + 3)).value = int(stock.bs_df.iloc[6, i] / report_unit)
-        data_sheet.range((28, i + 3)).value = int(stock.bs_df.iloc[7, i] / report_unit)
+    for i in range(1, len(stock.annual_bs.columns)):
+        data_sheet.range((20, i + 3)).value = int(stock.annual_bs.iloc[0, i] / report_unit)
+        data_sheet.range((21, i + 3)).value = int(stock.annual_bs.iloc[1, i] / report_unit)
+        data_sheet.range((22, i + 3)).value = int(stock.annual_bs.iloc[2, i] / report_unit)
+        data_sheet.range((23, i + 3)).value = int(stock.annual_bs.iloc[3, i] / report_unit)
+        data_sheet.range((25, i + 3)).value = int(stock.annual_bs.iloc[4, i] / report_unit)
+        data_sheet.range((26, i + 3)).value = int(stock.annual_bs.iloc[5, i] / report_unit)
+        data_sheet.range((27, i + 3)).value = int(stock.annual_bs.iloc[6, i] / report_unit)
+        data_sheet.range((28, i + 3)).value = int(stock.annual_bs.iloc[7, i] / report_unit)

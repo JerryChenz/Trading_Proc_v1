@@ -1,5 +1,5 @@
 from smart_value.asset import *
-from smart_value.financial_data import yahoo_data as yh
+from smart_value.financial_data import yahoo_data as yf
 from smart_value.financial_data import exchange_rate as fx
 import pandas as pd
 
@@ -17,7 +17,8 @@ class Stock(Asset):
         self.invest_horizon = 3  # 3 years holding period for stock by default
         self.report_currency = None
         self.is_df = None
-        self.bs_df = None  # annual data, latest quarter data needed
+        self.annual_bs = None  # annual balance sheet data
+        self.quarter_bs =None  # last quarter balance sheet data
         self.fx_rate = None
         self.source = source
         self.load_data()
@@ -33,7 +34,7 @@ class Stock(Asset):
     def load_from_yf(self):
         """Scrap the financial_data from yfinance API"""
 
-        ticker_data = yh.Financials(self.asset_code)
+        ticker_data = yf.Financials(self.asset_code)
 
         self.name = ticker_data.name
         self.price = ticker_data.price
@@ -43,17 +44,18 @@ class Stock(Asset):
         self.fx_rate = fx.get_forex_rate(self.report_currency, self.price[1])
         self.periodic_payment = ticker_data.dividends
         self.is_df = ticker_data.income_statement
-        self.bs_df = ticker_data.balance_sheet
-        self.last_fy = ticker_data.balance_sheet.columns[0]
+        self.annual_bs = ticker_data.annual_bs
+        self.quarter_bs = ticker_data.quarter_bs
+        self.last_fy = ticker_data.annual_bs.columns[0]
 
-    def present_data(self):
+    def current_summary(self):
         """Return a summary of all the key stock data.
 
         :return: All key stock data in one DataFrame
         """
 
         # balance sheet and income statement information
-        current_bs = self.bs_df.iloc[:, :1]
+        current_bs = self.quarter_bs.iloc[:, :1]
         current_is = self.is_df.iloc[:, :1]
         # concat 2 Series column-wise
         stock_summary = pd.concat([current_bs, current_is]).T
@@ -69,15 +71,15 @@ class Stock(Asset):
                                  'SellingGeneralAndAdministration', 'InterestExpense', 'NetIncomeCommonStockholders']
         # ticker and dividend
         stock_summary.insert(loc=0, column='Ticker', value=self.asset_code)
-        stock_summary['Name'] = self.name
-        stock_summary['Exchange'] = self.exchange
-        stock_summary['Price'] = self.price[0]
-        stock_summary['Price_currency'] = self.price[1]
-        stock_summary['Shares'] = self.shares
-        stock_summary['Reporting_Currency'] = self.report_currency
-        stock_summary['Fx_rate'] = self.fx_rate
-        stock_summary['Last_fy'] = self.last_fy
-        stock_summary['Dividend'] = self.periodic_payment
+        stock_summary.insert(loc=1, column='Name', value=self.name)
+        stock_summary.insert(loc=2, column='Exchange', value=self.exchange)
+        stock_summary.insert(loc=3, column='Price', value=self.price[0])
+        stock_summary.insert(loc=4, column='Price_currency', value=self.price[1])
+        stock_summary.insert(loc=5, column='Shares', value=self.shares)
+        stock_summary.insert(loc=6, column='Reporting_Currency', value=self.report_currency)
+        stock_summary.insert(loc=7, column='Fx_rate', value=self.fx_rate)
+        stock_summary.insert(loc=8, column='Dividend', value=self.periodic_payment)
+        stock_summary.insert(loc=9, column='Last_fy', value=self.last_fy)
 
         return stock_summary.set_index('Ticker')
 

@@ -15,12 +15,14 @@ def collect_data(tickers, source):
 
     :param tickers: a list of tickers to screen through
     :param source: "yf" chooses yahoo finance
+    :return: company summary on current data
+    :rtype: DataFrame
     """
 
     summary = None
     for ticker in tickers:
         company = smart_value.stock.Stock(ticker, source)
-        new_row = company.present_data()
+        new_row = company.current_summary()
         if summary is None:
             data = new_row
         else:
@@ -31,6 +33,7 @@ def collect_data(tickers, source):
     cwd = pathlib.Path.cwd().resolve()
     monitor_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
     summary.to_csv(monitor_folder / 'screener_summary.csv')
+    return summary
 
 
 # Step 2: filter

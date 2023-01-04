@@ -21,13 +21,17 @@ class Financials:
         self.dividends = -int(self.stock_data.get_cashflow().fillna(0).loc['CommonStockDividendPaid'][0]) / self.shares
         self.next_earnings = pd.to_datetime(datetime.fromtimestamp(self.stock_data.info['mostRecentQuarter'])
                                             .strftime("%Y-%m-%d")) + pd.DateOffset(months=6)
-        self.balance_sheet = self.get_balance_sheet()
+        self.annual_bs = self.get_balance_sheet("annual")
+        self.quarter_bs = self.get_balance_sheet("quarter")
         self.income_statement = self.get_income_statement()
 
-    def get_balance_sheet(self):
+    def get_balance_sheet(self, option):
         """Returns a DataFrame with selected balance sheet data"""
 
-        balance_sheet = self.stock_data.get_balance_sheet()
+        if option == "annual":
+            balance_sheet = self.stock_data.get_balance_sheet()
+        else:
+            balance_sheet = self.stock_data.quarterly_balance_sheet
         # Start of Cleaning: make sure the data has all the required indexes
         dummy = {"Dummy": [None, None, None, None, None, None, None, None, None, None, None, None, None, None, None]}
         dummy_df = pd.DataFrame(dummy, index=['TotalAssets', 'CurrentAssets', 'CurrentLiabilities',
