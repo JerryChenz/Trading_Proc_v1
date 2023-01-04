@@ -1,6 +1,8 @@
 import smart_value.stock
 import pandas as pd
 import pathlib
+import time
+import glob, os, json
 
 '''
 Two ways to create a screener:
@@ -8,37 +10,81 @@ Two ways to create a screener:
 2. Collect data & filter based on multiple criteria afterwards. (preferred and used here)
 '''
 
+cwd = pathlib.Path.cwd().resolve()
+json_dir = cwd / 'financial_models' / 'Opportunities' / 'Monitor' / 'data'
 
 # Step 1: Collect data
 def collect_data(tickers, source):
-    """Return the stock data in the screener format above and appends to the summary.
+    """Collect a list of company data, then export json.
 
     :param tickers: a list of tickers to screen through
     :param source: "yf" chooses yahoo finance
-    :return: company summary on current data
-    :rtype: DataFrame
     """
 
-    cwd = pathlib.Path.cwd().resolve()
-    data_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor' / 'data'
-
-    # summary = None
+    # Collect the company data and export in json
     for ticker in tickers:
+        try:
+            company_data(ticker, source)
+        except KeyError:
+            print(f'{ticker} is not valid, skip')
+            continue
+
+        print(ticker + ' data added.')
+
+    # export the json files and export the summary in DataFrame
+    print("merging data...")
+    merge_data()
+    print("csv exported.")
+
+
+def company_data(ticker, source):
+    """Collect the company data, then export json.
+
+    :param ticker: collect the data using string ticker
+    :param source: "yf" chooses yahoo finance
+    """
+
+    # external API error re-try
+    try_count = 0
+    max_try = 10
+
+    try:
         company = smart_value.stock.Stock(ticker, source)
         # export the summary
         new_row = company.current_summary()
-        new_row.to_json(data_folder / f'{ticker} data.json')
-        # if summary is None:
-        #     summary = new_row
-        # else:
-        #     summary = pd.concat([summary, new_row])
-        print(ticker + ' added.')
+        new_row.to_json(json_dir / f'{ticker} data.json')
+    except IndexError:
+        try_count += 1
+        if try_count < max_try:
+            print(f'external API error, will re-try {ticker} after 60 sec')
+            time.sleep(60)
+            print(f're-try {ticker}')
+            company_data(ticker, source)
+    except ValueError:
+        try_count += 1
+        if try_count < max_try:
+            print(f'external API error, will re-try {ticker} after 120 sec')
+            time.sleep(120)
+            print(f're-try {ticker}')
+            company_data(ticker, source)
 
-    # export the summary
-    # monitor_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
-    # summary.to_csv(monitor_folder / 'screener_summary.csv')
-    # return summary
 
+def merge_data():
+    """Merge multiple JSON files into a pandas DataFrame, then export to csv"""
+
+    monitor_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
+
+    json_pattern = os.path.join(json_dir, '*.json')
+    file_list = glob.glob(json_pattern)
+
+    dfs = []
+    for file in file_list:
+        with open(file) as f:
+            json_data = pd.json_normalize(json.loads(f.read()))
+            json_data['site'] = file.rsplit("/", 1)[-1]
+        dfs.append(json_data)
+    df = pd.concat(dfs)
+    df.to_csv(monitor_folder / 'screener_summary.csv')
 
 # Step 2: filter
 def load_filters(csv_file):
