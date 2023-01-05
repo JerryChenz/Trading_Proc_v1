@@ -1,21 +1,65 @@
-# InvestmentManagement
-Multi-assets Investment Management tool for potential oppertunities and current holdings.
+Investment Management
+=========================
+Public equity Investment Management tool for potential opportunities and current holdings.
 
-Purpose and Aim:
-1. To automate the boring tasks of getting informaiton in the company financial statements and market price information;
-2. To screen stock based on custom conditions featuring capbility beyond the available stock screener;
-3. To visualizes and compare all the investments opportunities (inclduing cross-assets comparison);
-4. To manage and update all the financial models;
-5. To visualizes and monitors the current holdings given key marco-economic risk factors including central bank rates and inflation data;
+Feature
+=========================
+1. Stock screener
+   - To screen stock based on more powerful and flexible custom criteria;
+   - Unique custom screening criteria using custom variables
+   - Ex: EV = capitalization_report + total_debt + MinorityInterest - CashAndCashEquivalents - total_nonop_assets * 0.5
 
-Tools:
-1. stock model management
-2. stock screener
-3. opportunities monitor
-4. current holding monitor
+2. Stock model management
+   - To automate the boring tasks of getting information in the company financial statements and market price information;
+   - To manage and update all the financial models;
 
-Data sources:
-1. Yahoo finance (YH Finance API and yfinance)
-2. SEC API (***WIP***)
-3. Bloomberg API (***WIP***)
-4. Wind (***WIP***)
+3. Opportunities and current holdings Monitor
+   - To visualizes and compare all the investments opportunities (including cross-assets comparison);
+   - To visualizes and monitors the current holdings given key marco-economic risk factors including central bank rates and inflation data;
+
+Stock idea Generation and Analysis Methodology
+=========================
+1. Use Public Screening tools to find ~1000 potential ideas
+2. Use Custom Screening tool to narrow down the search to <50 stocks
+3. Use Financial model to analyze the stock Individually
+![](https://github.com/JerryChenz/InvestmentManagementOpen/blob/main/screenshoots/idea_funnel_1.PNG)
+
+Architecture
+=========================
+TBA
+
+Preview
+=========================
+1. Stock screener
+![](https://github.com/JerryChenz/InvestmentManagementOpen/blob/main/screenshoots/Screenshot_screener_1.PNG)
+![](https://github.com/JerryChenz/InvestmentManagementOpen/blob/main/screenshoots/Screenshot_screener_2.PNG)
+2. Stock model management
+![](https://github.com/JerryChenz/InvestmentManagementOpen/blob/main/screenshoots/ModelManagement_1.PNG)
+3. Opportunities monitor
+![](https://github.com/JerryChenz/InvestmentManagementOpen/blob/main/screenshoots/Monitor_1.PNG)
+
+Data sources
+=========================
+- Yahoo finance (yfinance)
+- SEC API (WIP)
+- Bloomberg API (WIP)
+- Wind (WIP)
+
+Installation
+=========================
+TBA
+
+Roadmap
+=========================
+- [x] **Preview Version**  2023-01-05
+    - Stock Screener available for use
+
+Possible extensions for multi-assets management
+=========================
+Public:
+- Bonds
+- REITs
+Private:
+- Private equity
+- Private credit
+- Real estate
