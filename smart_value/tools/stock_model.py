@@ -143,3 +143,48 @@ def update_data(data_sheet, stock):
         data_sheet.range((29, j + 3)).value = int(stock.annual_bs.iloc[9, j] / report_unit)
         # NetPPE
         data_sheet.range((30, j + 3)).value = int(stock.annual_bs.iloc[14, j] / report_unit)
+
+
+# update dash only, not touching the data tab
+def update_dash(ticker):
+    """Creates a new model if it doesn't already exist, then update.
+
+    :param ticker: the string ticker of the stock
+    :raises FileNotFoundError: raises an exception when there is an error related to the model files or path
+    """
+
+    stock_regex = re.compile(".*Stock_Valuation_v")
+    negative_regex = re.compile(".*~.*")
+
+    # Relevant Paths
+    cwd = pathlib.Path.cwd().resolve()
+    template_folder_path = cwd / 'financial_models' / 'Model_templates' / 'Listed_template'
+    new_bool = False
+
+    try:
+        # Check if the template exists
+        if pathlib.Path(template_folder_path).exists():
+            path_list = [val_file_path for val_file_path in template_folder_path.iterdir()
+                         if template_folder_path.is_dir() and val_file_path.is_file()]
+            template_path_list = list(item for item in path_list if stock_regex.match(str(item)) and
+                                      not negative_regex.match(str(item)))
+            if len(template_path_list) > 1 or len(template_path_list) == 0:
+                raise FileNotFoundError("The template file error", "temp_file")
+        else:
+            raise FileNotFoundError("The stock_template folder doesn't exist", "temp_folder")
+    except FileNotFoundError as err:
+        if err.args[1] == "temp_folder":
+            print("The stock_template folder doesn't exist")
+        if err.args[1] == "temp_file":
+            print("The template file error")
+    else:
+        # New model path
+        model_name = ticker + "_" + os.path.basename(template_path_list[0])
+        model_path = cwd / 'financial_models' / model_name
+        if not pathlib.Path(model_path).exists():
+            # Creates a new model file if not already exists in cwd
+            print(f'Creating {model_name}...')
+            new_bool = True
+            shutil.copy(template_path_list[0], model_path)
+        # update the model
+        update_stock_model(ticker, model_name, model_path, new_bool)
