@@ -20,7 +20,7 @@ def new_stock_model(ticker):
 
     # Relevant Paths
     cwd = pathlib.Path.cwd().resolve()
-    template_folder_path = cwd / 'financial_models' / 'templates' / 'Listed_template'
+    template_folder_path = cwd / 'financial_models' / 'Model_templates' / 'Listed_template'
     new_bool = False
 
     try:

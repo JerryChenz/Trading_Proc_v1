@@ -11,7 +11,8 @@ Two ways to create a screener:
 '''
 
 cwd = pathlib.Path.cwd().resolve()
-json_dir = cwd / 'financial_models' / 'Opportunities' / 'Monitor' / 'data'
+screener_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
+json_dir = screener_folder / 'data'
 
 # Step 1: Collect data
 def collect_data(tickers, source):
@@ -79,8 +80,6 @@ def company_data(ticker, source):
 def merge_data():
     """Merge multiple JSON files into a pandas DataFrame, then export to csv"""
 
-    monitor_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
-
     json_pattern = os.path.join(json_dir, '*.json')
     files = glob.glob(json_pattern)
 
@@ -98,7 +97,7 @@ def merge_data():
              'OtherShortTermInvestments', 'InvestmentProperties', 'LongTermEquityInvestment',
              'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'CostOfRevenue',
              'SellingGeneralAndAdministration', 'InterestExpense', 'NetIncomeCommonStockholders']].set_index('Ticker')
-    df.to_csv(monitor_folder / 'screener_summary.csv')
+    df.to_csv(screener_folder / 'screener_summary.csv')
 
 # Step 2: filter
 def load_filters(csv_file):
