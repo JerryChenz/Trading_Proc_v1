@@ -147,44 +147,34 @@ def update_data(data_sheet, stock):
 
 # update dash only, not touching the data tab
 def update_dash(ticker):
-    """Creates a new model if it doesn't already exist, then update.
+    """Update the dashboard of the model.
 
     :param ticker: the string ticker of the stock
     :raises FileNotFoundError: raises an exception when there is an error related to the model files or path
     """
 
-    stock_regex = re.compile(".*Stock_Valuation_v")
-    negative_regex = re.compile(".*~.*")
-
     # Relevant Paths
-    cwd = pathlib.Path.cwd().resolve()
-    template_folder_path = cwd / 'financial_models' / 'Model_templates' / 'Listed_template'
-    new_bool = False
+    opportunities_folder_path = pathlib.Path.cwd().resolve() / 'financial_models' / 'Opportunities'
+    r = re.compile(f"{ticker}_Valuation_v")
 
     try:
-        # Check if the template exists
-        if pathlib.Path(template_folder_path).exists():
-            path_list = [val_file_path for val_file_path in template_folder_path.iterdir()
-                         if template_folder_path.is_dir() and val_file_path.is_file()]
-            template_path_list = list(item for item in path_list if stock_regex.match(str(item)) and
-                                      not negative_regex.match(str(item)))
-            if len(template_path_list) > 1 or len(template_path_list) == 0:
-                raise FileNotFoundError("The template file error", "temp_file")
+        if pathlib.Path(opportunities_folder_path).exists():
+            path_list = [val_file_path for val_file_path in opportunities_folder_path.iterdir()
+                         if opportunities_folder_path.is_dir() and val_file_path.is_file()]
+            opportunities_path_list = list(item for item in path_list if r.match(str(item)))
+            # there should only be one model for a ticker
+            if len(opportunities_path_list) == 0 or len(opportunities_path_list) > 1:
+                raise FileNotFoundError("Opportunity file error", "opp_file")
         else:
-            raise FileNotFoundError("The stock_template folder doesn't exist", "temp_folder")
+            raise FileNotFoundError("The opportunities folder doesn't exist", "opp_folder")
     except FileNotFoundError as err:
-        if err.args[1] == "temp_folder":
-            print("The stock_template folder doesn't exist")
-        if err.args[1] == "temp_file":
-            print("The template file error")
+        if err.args[1] == "opp_folder":
+            print("The opportunities folder doesn't exist")
+        if err.args[1] == "opp_file":
+            print("No opportunity file", "opp_file")
     else:
-        # New model path
-        model_name = ticker + "_" + os.path.basename(template_path_list[0])
-        model_path = cwd / 'financial_models' / model_name
-        if not pathlib.Path(model_path).exists():
-            # Creates a new model file if not already exists in cwd
-            print(f'Creating {model_name}...')
-            new_bool = True
-            shutil.copy(template_path_list[0], model_path)
-        # update the model
-        update_stock_model(ticker, model_name, model_path, new_bool)
+        with xlwings.App(visible=False) as app:
+            xl_book = app.books.open(opportunities_path_list)
+            dash_sheet = xl_book.sheets('Dashboard')
+            company = smart_value.stock.Stock(ticker, "yf")
+            smart_value.tools.stock_model.update_dashboard(dash_sheet, company)

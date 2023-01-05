@@ -18,7 +18,7 @@ class Stock(Asset):
         self.report_currency = None
         self.is_df = None
         self.annual_bs = None  # annual balance sheet data
-        self.quarter_bs =None  # last quarter balance sheet data
+        self.quarter_bs = None  # last quarter balance sheet data
         self.fx_rate = None
         self.source = source
         self.load_data()
