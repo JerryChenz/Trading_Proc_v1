@@ -95,8 +95,6 @@ def update_dashboard(dash_sheet, stock, new_bool=False):
     dash_sheet.range('J4').value = stock.price[1]
     dash_sheet.range('I5').value = stock.shares
     dash_sheet.range('I12').value = stock.fx_rate
-    dash_sheet.range('I13').value = stock.periodic_payment
-    dash_sheet.range('J13').value = stock.buyback
 
 
 def update_data(data_sheet, stock):
@@ -114,35 +112,39 @@ def update_data(data_sheet, stock):
     else:
         report_unit = int((len(str(stock.is_df.iloc[0, 0])) - 9) / 3 + 0.99) * 1000
     data_sheet.range('C4').value = report_unit
-    # load income statement
+    # load income statement and cash flow statement
     for i in range(len(stock.is_df.columns)):
         data_sheet.range((7, i + 3)).value = int(stock.is_df.iloc[0, i] / report_unit)
         data_sheet.range((9, i + 3)).value = int(stock.is_df.iloc[1, i] / report_unit)
         data_sheet.range((11, i + 3)).value = int(stock.is_df.iloc[2, i] / report_unit)
-        data_sheet.range((17, i + 3)).value = int(stock.is_df.iloc[3, i] / report_unit)
-        data_sheet.range((18, i + 3)).value = int(stock.is_df.iloc[4, i] / report_unit)
+        data_sheet.range((18, i + 3)).value = int(stock.is_df.iloc[3, i] / report_unit)
+        data_sheet.range((19, i + 3)).value = int(stock.is_df.iloc[4, i] / report_unit)
+        # CommonStockDividendPaid
+        data_sheet.range((41, i + 3)).value = int(-stock.cf_df.iloc[0, i] / report_unit)
+        # RepurchaseOfCapitalStock
+        data_sheet.range((42, i + 3)).value = int(-stock.cf_df.iloc[1, i] / report_unit)
     # load balance sheet
     for j in range(1, len(stock.annual_bs.columns)):
         # CurrentAssets
-        data_sheet.range((20, j + 3)).value = int(stock.annual_bs.iloc[1, j] / report_unit)
+        data_sheet.range((21, j + 3)).value = int(stock.annual_bs.iloc[1, j] / report_unit)
         # CurrentLiabilities
-        data_sheet.range((21, j + 3)).value = int(stock.annual_bs.iloc[2, j] / report_unit)
+        data_sheet.range((22, j + 3)).value = int(stock.annual_bs.iloc[2, j] / report_unit)
         # ST Interest-bearing Debt = CurrentDebtAndCapitalLeaseObligation
-        data_sheet.range((22, j + 3)).value = int(stock.annual_bs.iloc[3, j] / report_unit)
+        data_sheet.range((23, j + 3)).value = int(stock.annual_bs.iloc[3, j] / report_unit)
         # CurrentCapitalLeaseObligation
-        data_sheet.range((23, j + 3)).value = int(stock.annual_bs.iloc[4, j] / report_unit)
+        data_sheet.range((24, j + 3)).value = int(stock.annual_bs.iloc[4, j] / report_unit)
         # LT Interest-bearing Debt = LongTermDebtAndCapitalLeaseObligation
         data_sheet.range((25, j + 3)).value = int(stock.annual_bs.iloc[5, j] / report_unit)
         # LongTermCapitalLeaseObligation
         data_sheet.range((26, j + 3)).value = int(stock.annual_bs.iloc[6, j] / report_unit)
         # TotalEquityGrossMinorityInterest
-        data_sheet.range((27, j + 3)).value = int(stock.annual_bs.iloc[7, j] / report_unit)
+        data_sheet.range((28, j + 3)).value = int(stock.annual_bs.iloc[7, j] / report_unit)
         # MinorityInterest
-        data_sheet.range((28, j + 3)).value = int(stock.annual_bs.iloc[8, j] / report_unit)
+        data_sheet.range((29, j + 3)).value = int(stock.annual_bs.iloc[8, j] / report_unit)
         # CashAndCashEquivalents
-        data_sheet.range((29, j + 3)).value = int(stock.annual_bs.iloc[9, j] / report_unit)
+        data_sheet.range((30, j + 3)).value = int(stock.annual_bs.iloc[9, j] / report_unit)
         # NetPPE
-        data_sheet.range((30, j + 3)).value = int(stock.annual_bs.iloc[14, j] / report_unit)
+        data_sheet.range((31, j + 3)).value = int(stock.annual_bs.iloc[14, j] / report_unit)
 
 
 # update dash only, not touching the data tab

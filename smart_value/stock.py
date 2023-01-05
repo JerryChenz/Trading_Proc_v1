@@ -19,6 +19,7 @@ class Stock(Asset):
         self.is_df = None
         self.annual_bs = None  # annual balance sheet data
         self.quarter_bs = None  # last quarter balance sheet data
+        self.cf_df = None
         self.fx_rate = None
         self.buyback = None
         self.source = source
@@ -48,6 +49,7 @@ class Stock(Asset):
         self.is_df = ticker_data.income_statement
         self.annual_bs = ticker_data.annual_bs
         self.quarter_bs = ticker_data.quarter_bs
+        self.cf_df = ticker_data.cash_flow
         self.last_fy = ticker_data.annual_bs.columns[0]
 
     def current_summary(self):
