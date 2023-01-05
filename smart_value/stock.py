@@ -20,6 +20,7 @@ class Stock(Asset):
         self.annual_bs = None  # annual balance sheet data
         self.quarter_bs = None  # last quarter balance sheet data
         self.fx_rate = None
+        self.buyback = None
         self.source = source
         self.load_data()
 
@@ -43,6 +44,7 @@ class Stock(Asset):
         self.report_currency = ticker_data.report_currency
         self.fx_rate = fx.get_forex_rate(self.report_currency, self.price[1])
         self.periodic_payment = ticker_data.dividends
+        self.buyback = ticker_data.buyback
         self.is_df = ticker_data.income_statement
         self.annual_bs = ticker_data.annual_bs
         self.quarter_bs = ticker_data.quarter_bs
@@ -81,7 +83,8 @@ class Stock(Asset):
         stock_summary.insert(loc=6, column='Reporting_Currency', value=self.report_currency)
         stock_summary.insert(loc=7, column='Fx_rate', value=self.fx_rate)
         stock_summary.insert(loc=8, column='Dividend', value=self.periodic_payment)
-        stock_summary.insert(loc=9, column='Last_fy', value=self.last_fy)
+        stock_summary.insert(loc=9, column='Buyback', value=self.buyback)
+        stock_summary.insert(loc=10, column='Last_fy', value=self.last_fy)
 
         return stock_summary
 

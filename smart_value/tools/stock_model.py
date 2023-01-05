@@ -91,12 +91,12 @@ def update_dashboard(dash_sheet, stock, new_bool=False):
         stock.is_updated = False
     else:
         stock.is_updated = True
-    dash_sheet.range('E6').value = stock.is_updated
     dash_sheet.range('I4').value = stock.price[0]
     dash_sheet.range('J4').value = stock.price[1]
     dash_sheet.range('I5').value = stock.shares
     dash_sheet.range('I12').value = stock.fx_rate
     dash_sheet.range('I13').value = stock.periodic_payment
+    dash_sheet.range('J13').value = stock.buyback
 
 
 def update_data(data_sheet, stock):
@@ -155,26 +155,17 @@ def update_dash(ticker):
 
     # Relevant Paths
     opportunities_folder_path = pathlib.Path.cwd().resolve() / 'financial_models' / 'Opportunities'
-    r = re.compile(f"{ticker}_Valuation_v")
+    path_list = []
 
-    try:
-        if pathlib.Path(opportunities_folder_path).exists():
-            path_list = [val_file_path for val_file_path in opportunities_folder_path.iterdir()
-                         if opportunities_folder_path.is_dir() and val_file_path.is_file()]
-            opportunities_path_list = list(item for item in path_list if r.match(str(item)))
-            # there should only be one model for a ticker
-            if len(opportunities_path_list) == 0 or len(opportunities_path_list) > 1:
-                raise FileNotFoundError("Opportunity file error", "opp_file")
-        else:
-            raise FileNotFoundError("The opportunities folder doesn't exist", "opp_folder")
-    except FileNotFoundError as err:
-        if err.args[1] == "opp_folder":
-            print("The opportunities folder doesn't exist")
-        if err.args[1] == "opp_file":
-            print("No opportunity file", "opp_file")
-    else:
-        with xlwings.App(visible=False) as app:
-            xl_book = app.books.open(opportunities_path_list)
-            dash_sheet = xl_book.sheets('Dashboard')
-            company = smart_value.stock.Stock(ticker, "yf")
-            smart_value.tools.stock_model.update_dashboard(dash_sheet, company)
+    if pathlib.Path(opportunities_folder_path).exists():
+        path_list = [val_file_path for val_file_path in opportunities_folder_path.iterdir()
+                     if opportunities_folder_path.is_dir() and val_file_path.is_file()]
+    for p in path_list:
+        if ticker in p.stem:
+            with xlwings.App(visible=False) as app:
+                xl_book = app.books.open(p)
+                dash_sheet = xl_book.sheets('Dashboard')
+                company = smart_value.stock.Stock(ticker, "yf")
+                smart_value.tools.stock_model.update_dashboard(dash_sheet, company)
+                xl_book.save(p)
+                xl_book.close()

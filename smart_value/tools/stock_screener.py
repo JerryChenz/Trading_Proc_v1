@@ -14,6 +14,7 @@ cwd = pathlib.Path.cwd().resolve()
 screener_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
 json_dir = screener_folder / 'data'
 
+
 # Step 1: Collect data
 def collect_data(tickers, source):
     """Collect a list of company data, then export json.
@@ -88,15 +89,16 @@ def merge_data():
         data = pd.read_json(file)  # read data frame from json file
         dfs.append(data.transpose())  # append the data frame to the list
 
-    df = pd.concat(dfs, ignore_index=False) # concatenate all the data frames in the list.
-    df = df[['Ticker','Name','Exchange','Price','Price_currency','Shares','Reporting_Currency','Fx_rate','Dividend',
-             'Last_fy','TotalAssets', 'CurrentAssets', 'CurrentLiabilities',
-             'CurrentDebtAndCapitalLeaseObligation', 'CurrentCapitalLeaseObligation',
-             'LongTermDebtAndCapitalLeaseObligation', 'LongTermCapitalLeaseObligation',
-             'TotalEquityGrossMinorityInterest', 'MinorityInterest', 'CashAndCashEquivalents',
-             'OtherShortTermInvestments', 'InvestmentProperties', 'LongTermEquityInvestment',
-             'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'CostOfRevenue',
-             'SellingGeneralAndAdministration', 'InterestExpense', 'NetIncomeCommonStockholders']].set_index('Ticker')
+    df = pd.concat(dfs, ignore_index=False)  # concatenate all the data frames in the list.
+    df = df[
+        ['Ticker', 'Name', 'Exchange', 'Price', 'Price_currency', 'Shares', 'Reporting_Currency', 'Fx_rate',
+         'Dividend', 'Buyback', 'Last_fy', 'TotalAssets', 'CurrentAssets', 'CurrentLiabilities',
+         'CurrentDebtAndCapitalLeaseObligation', 'CurrentCapitalLeaseObligation',
+         'LongTermDebtAndCapitalLeaseObligation', 'LongTermCapitalLeaseObligation',
+         'TotalEquityGrossMinorityInterest', 'MinorityInterest', 'CashAndCashEquivalents',
+         'OtherShortTermInvestments', 'InvestmentProperties', 'LongTermEquityInvestment',
+         'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'CostOfRevenue',
+         'SellingGeneralAndAdministration', 'InterestExpense', 'NetIncomeCommonStockholders']].set_index('Ticker')
     df.to_csv(screener_folder / 'screener_summary.csv')
 
 # Step 2: filter done using ipynb with colab Notebook

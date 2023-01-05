@@ -28,6 +28,10 @@ class Financials:
             self.dividends = -int(self.cash_flow.loc['CommonStockDividendPaid'][0]) / self.shares
         except ZeroDivisionError:
             self.dividends = 0
+        try:
+            self.buyback = -int(self.cash_flow.loc['RepurchaseOfCapitalStock'][0]) / self.shares
+        except ZeroDivisionError:
+            self.buyback = 0
 
     def get_balance_sheet(self, option):
         """Returns a DataFrame with selected balance sheet data"""
@@ -85,7 +89,7 @@ class Financials:
         cash_flow = self.stock_data.get_cashflow()
         # Start of Cleaning: make sure the data has all the required indexes
         dummy = {"Dummy": [None]}
-        cf_index = ['CommonStockDividendPaid']
+        cf_index = ['CommonStockDividendPaid', 'RepurchaseOfCapitalStock']
         dummy_df = pd.DataFrame(dummy, index=cf_index)
         clean_cf = dummy_df.join(cash_flow)
         cf_df = clean_cf.loc[cf_index]
