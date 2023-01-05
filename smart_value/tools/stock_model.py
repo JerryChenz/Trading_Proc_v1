@@ -122,12 +122,24 @@ def update_data(data_sheet, stock):
         data_sheet.range((17, i + 3)).value = int(stock.is_df.iloc[3, i] / report_unit)
         data_sheet.range((18, i + 3)).value = int(stock.is_df.iloc[4, i] / report_unit)
     # load balance sheet
-    for i in range(1, len(stock.annual_bs.columns)):
-        data_sheet.range((20, i + 3)).value = int(stock.annual_bs.iloc[0, i] / report_unit)
-        data_sheet.range((21, i + 3)).value = int(stock.annual_bs.iloc[1, i] / report_unit)
-        data_sheet.range((22, i + 3)).value = int(stock.annual_bs.iloc[2, i] / report_unit)
-        data_sheet.range((23, i + 3)).value = int(stock.annual_bs.iloc[3, i] / report_unit)
-        data_sheet.range((25, i + 3)).value = int(stock.annual_bs.iloc[4, i] / report_unit)
-        data_sheet.range((26, i + 3)).value = int(stock.annual_bs.iloc[5, i] / report_unit)
-        data_sheet.range((27, i + 3)).value = int(stock.annual_bs.iloc[6, i] / report_unit)
-        data_sheet.range((28, i + 3)).value = int(stock.annual_bs.iloc[7, i] / report_unit)
+    for j in range(1, len(stock.annual_bs.columns)):
+        # CurrentAssets
+        data_sheet.range((20, j + 3)).value = int(stock.annual_bs.iloc[1, j] / report_unit)
+        # CurrentLiabilities
+        data_sheet.range((21, j + 3)).value = int(stock.annual_bs.iloc[2, j] / report_unit)
+        # ST Interest-bearing Debt = CurrentDebtAndCapitalLeaseObligation
+        data_sheet.range((22, j + 3)).value = int(stock.annual_bs.iloc[3, j] / report_unit)
+        # CurrentCapitalLeaseObligation
+        data_sheet.range((23, j + 3)).value = int(stock.annual_bs.iloc[4, j] / report_unit)
+        # LT Interest-bearing Debt = LongTermDebtAndCapitalLeaseObligation
+        data_sheet.range((25, j + 3)).value = int(stock.annual_bs.iloc[5, j] / report_unit)
+        # LongTermCapitalLeaseObligation
+        data_sheet.range((26, j + 3)).value = int(stock.annual_bs.iloc[6, j] / report_unit)
+        # TotalEquityGrossMinorityInterest
+        data_sheet.range((27, j + 3)).value = int(stock.annual_bs.iloc[7, j] / report_unit)
+        # MinorityInterest
+        data_sheet.range((28, j + 3)).value = int(stock.annual_bs.iloc[8, j] / report_unit)
+        # CashAndCashEquivalents
+        data_sheet.range((29, j + 3)).value = int(stock.annual_bs.iloc[9, j] / report_unit)
+        # NetPPE
+        data_sheet.range((30, j + 3)).value = int(stock.annual_bs.iloc[14, j] / report_unit)
