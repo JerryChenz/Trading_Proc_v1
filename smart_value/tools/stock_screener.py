@@ -55,6 +55,7 @@ def company_data(ticker, source):
         # export the summary
         new_row = company.current_summary().transpose()
         new_row.to_json(json_dir / f'{ticker} data.json')
+        time.sleep(0.5)
     except IndexError:
         try_count += 1
         if try_count < max_try:
