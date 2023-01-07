@@ -21,11 +21,12 @@ class Stock(Asset):
         self.cf_df = None
         self.is_df = None
         self.avg_gross_margin = None
-        self.geo_sales_growth = None
+        self.avg_sales_growth = None
         self.avg_ebit_margin = None
-        self.geo_ebit_growth = None
+        self.avg_ebit_growth = None
         self.avg_net_margin = None
-        self.geo_ni_growth = None
+        self.avg_ni_growth = None
+        self.years_of_data = None
         self.fx_rate = None
         self.buyback = None
         self.source = source
@@ -57,11 +58,12 @@ class Stock(Asset):
         self.cf_df = ticker_data.cash_flow
         self.is_df = ticker_data.income_statement
         self.avg_gross_margin = ticker_data.avg_gross_margin
-        self.geo_sales_growth = ticker_data.geo_sales_growth
+        self.avg_sales_growth = ticker_data.avg_sales_growth
         self.avg_ebit_margin = ticker_data.avg_ebit_margin
-        self.geo_ebit_growth = ticker_data.geo_ebit_growth
+        self.avg_ebit_growth = ticker_data.avg_ebit_growth
         self.avg_net_margin = ticker_data.avg_net_margin
-        self.geo_ni_growth = ticker_data.geo_ni_growth
+        self.avg_ni_growth = ticker_data.avg_ni_growth
+        self.years_of_data = ticker_data.years_of_data
         self.last_fy = ticker_data.annual_bs.columns[0]
 
     def current_summary(self):
@@ -86,7 +88,8 @@ class Stock(Asset):
                                  'TotalEquityGrossMinorityInterest', 'MinorityInterest', 'CashAndCashEquivalents',
                                  'OtherShortTermInvestments', 'InvestmentProperties', 'LongTermEquityInvestment',
                                  'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'CostOfRevenue',
-                                 'SellingGeneralAndAdministration', 'InterestExpense', 'NetIncomeCommonStockholders']
+                                 'SellingGeneralAndAdministration', 'InterestExpense', 'NetIncomeCommonStockholders',
+                                 'GrossMargin', 'EBIT', 'EbitMargin', 'NetMargin']
         # ticker and dividend
         stock_summary.insert(loc=0, column='Ticker', value=self.asset_code)
         stock_summary.insert(loc=1, column='Name', value=self.name)
@@ -99,12 +102,13 @@ class Stock(Asset):
         stock_summary.insert(loc=8, column='Dividend', value=self.periodic_payment)
         stock_summary.insert(loc=9, column='Buyback', value=self.buyback)
         stock_summary.insert(loc=10, column='Last_fy', value=self.last_fy)
-        stock_summary['Gross_margin'] = self.avg_gross_margin
-        stock_summary['Past_sales_growth'] = self.geo_sales_growth
-        stock_summary['Ebit_margin'] = self.avg_ebit_margin
-        stock_summary['Past_ebit_growth'] = self.geo_ebit_growth
-        stock_summary['Net_margin'] = self.avg_net_margin
-        stock_summary['Past_netincome_growth'] = self.geo_ni_growth
+        stock_summary['Avg_Gross_margin'] = self.avg_gross_margin
+        stock_summary['Avg_sales_growth'] = self.avg_sales_growth
+        stock_summary['Avg_ebit_margin'] = self.avg_ebit_margin
+        stock_summary['Avg_ebit_growth'] = self.avg_ebit_growth
+        stock_summary['Avg_net_margin'] = self.avg_net_margin
+        stock_summary['Avg_NetIncome_growth'] = self.avg_ni_growth
+        stock_summary['Years_of_data'] = self.years_of_data
 
         return stock_summary
 

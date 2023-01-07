@@ -11,7 +11,7 @@ Two ways to create a screener:
 '''
 
 cwd = pathlib.Path.cwd().resolve()
-screener_folder = cwd / 'financial_models' / 'Opportunities' / 'Monitor'
+screener_folder = cwd / 'financial_models' / 'Opportunities' / 'Screener'
 json_dir = screener_folder / 'data'
 
 
@@ -35,7 +35,7 @@ def collect_data(tickers, source):
 
     # export the json files and export the summary in DataFrame
     print("merging data...")
-    # merge_data()
+    merge_data()
     print("csv exported.")
 
 
@@ -62,20 +62,20 @@ def company_data(ticker, source):
             time.sleep(80)
             print(f're-try {ticker}')
             company_data(ticker, source)
-    # except ValueError:
-    #     try_count += 1
-    #     if try_count < max_try:
-    #         print(f'external API error, will re-try {ticker} after 120 sec')
-    #         time.sleep(120)
-    #         print(f're-try {ticker}')
-    #         company_data(ticker, source)
-    # except TypeError:
-    #     try_count += 1
-    #     if try_count < max_try:
-    #         print(f'external API error, will re-try {ticker} after 120 sec')
-    #         time.sleep(120)
-    #         print(f're-try {ticker}')
-    #         company_data(ticker, source)
+    except ValueError:
+        try_count += 1
+        if try_count < max_try:
+            print(f'external API error, will re-try {ticker} after 120 sec')
+            time.sleep(120)
+            print(f're-try {ticker}')
+            company_data(ticker, source)
+    except TypeError:
+        try_count += 1
+        if try_count < max_try:
+            print(f'external API error, will re-try {ticker} after 120 sec')
+            time.sleep(120)
+            print(f're-try {ticker}')
+            company_data(ticker, source)
 
 
 def merge_data():
@@ -97,8 +97,11 @@ def merge_data():
          'LongTermDebtAndCapitalLeaseObligation', 'LongTermCapitalLeaseObligation',
          'TotalEquityGrossMinorityInterest', 'MinorityInterest', 'CashAndCashEquivalents',
          'OtherShortTermInvestments', 'InvestmentProperties', 'LongTermEquityInvestment',
-         'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'CostOfRevenue',
-         'SellingGeneralAndAdministration', 'InterestExpense', 'NetIncomeCommonStockholders']].set_index('Ticker')
+         'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'CostOfRevenue', 'GrossMargin',
+         'SellingGeneralAndAdministration', 'EBIT', 'EbitMargin', 'InterestExpense', 'NetIncomeCommonStockholders',
+         'NetMargin', 'Avg_Gross_margin', 'Avg_sales_growth', 'Avg_ebit_margin', 'Avg_ebit_growth',
+         'Avg_net_margin', 'Avg_NetIncome_growth',
+         'Years_of_data']].set_index('Ticker')
     df.to_csv(screener_folder / 'screener_summary.csv')
 
-# Step 2: filter done using ipynb with colab Notebook
+# Step 2: filter done using ipynb with Jupyter Notebook
