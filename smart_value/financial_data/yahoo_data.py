@@ -1,6 +1,8 @@
 import pandas as pd
-from yfinance import Ticker
+import numpy as np
+from scipy import stats
 from datetime import datetime
+from yfinance import Ticker
 
 
 class Financials:
@@ -23,6 +25,13 @@ class Financials:
         self.annual_bs = self.get_balance_sheet("annual")
         self.quarter_bs = self.get_balance_sheet("quarter")
         self.income_statement = self.get_income_statement()
+        self.avg_gross_margin = self.income_statement['Gross_margin'].mean(axis=1)
+        print(self.avg_gross_margin)
+        self.geo_sales_growth = stats.gmean(self.income_statement.loc['TotalRevenue'], axis=1)
+        self.avg_ebit_margin = self.income_statement['Ebit_margin'].mean(axis=1)
+        self.geo_ebit_growth = stats.gmean(self.income_statement.loc['Ebit'], axis=1)
+        self.avg_net_margin = self.income_statement['Net_margin'].mean(axis=1)
+        self.geo_ni_growth = self.income_statement['NetIncomeCommonStockholders'].mean(axis=1)
         self.cash_flow = self.get_cash_flow()
         try:
             self.dividends = -int(self.cash_flow.loc['CommonStockDividendPaid'][0]) / self.shares
@@ -78,6 +87,24 @@ class Financials:
         dummy_df = pd.DataFrame(dummy, index=is_index)
         clean_is = dummy_df.join(income_statement)
         is_df = clean_is.loc[is_index]
+        try:
+            is_df['Gross_margin'] = np.round(is_df['CostOfRevenue'] / is_df['TotalRevenue'] * 100, 2)
+            print(is_df)
+        except ZeroDivisionError:
+            is_df['Gross_margin'] = 0
+        try:
+            is_df['Ebit'] = np.round(is_df['TotalRevenue'] - is_df['CostOfRevenue']
+                                     - is_df['SellingGeneralAndAdministration'] * 100, 2)
+        except ZeroDivisionError:
+            is_df['Ebit'] = 0
+        try:
+            is_df['Ebit_margin'] = np.round(is_df['Ebit'] / is_df['TotalRevenue'] * 100, 2)
+        except ZeroDivisionError:
+            is_df['Ebit_margin'] = 0
+        try:
+            is_df['Net_margin'] = np.round(is_df['NetIncomeCommonStockholders'] / is_df['TotalRevenue'] * 100, 2)
+        except ZeroDivisionError:
+            is_df['Net_margin'] = 0
         # Ending of Cleaning: drop the dummy column after join
         is_df.drop('Dummy', inplace=True, axis=1)
 

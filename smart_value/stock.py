@@ -16,10 +16,16 @@ class Stock(Asset):
 
         self.invest_horizon = 3  # 3 years holding period for stock by default
         self.report_currency = None
-        self.is_df = None
         self.annual_bs = None  # annual balance sheet data
         self.quarter_bs = None  # last quarter balance sheet data
         self.cf_df = None
+        self.is_df = None
+        self.avg_gross_margin = None
+        self.geo_sales_growth = None
+        self.avg_ebit_margin = None
+        self.geo_ebit_growth = None
+        self.avg_net_margin = None
+        self.geo_ni_growth = None
         self.fx_rate = None
         self.buyback = None
         self.source = source
@@ -46,10 +52,16 @@ class Stock(Asset):
         self.fx_rate = fx.get_forex_rate(self.report_currency, self.price[1])
         self.periodic_payment = ticker_data.dividends
         self.buyback = ticker_data.buyback
-        self.is_df = ticker_data.income_statement
         self.annual_bs = ticker_data.annual_bs
         self.quarter_bs = ticker_data.quarter_bs
         self.cf_df = ticker_data.cash_flow
+        self.is_df = ticker_data.income_statement
+        self.avg_gross_margin = ticker_data.avg_gross_margin
+        self.geo_sales_growth = ticker_data.geo_sales_growth
+        self.avg_ebit_margin = ticker_data.avg_ebit_margin
+        self.geo_ebit_growth = ticker_data.geo_ebit_growth
+        self.avg_net_margin = ticker_data.avg_net_margin
+        self.geo_ni_growth = ticker_data.geo_ni_growth
         self.last_fy = ticker_data.annual_bs.columns[0]
 
     def current_summary(self):
@@ -87,6 +99,12 @@ class Stock(Asset):
         stock_summary.insert(loc=8, column='Dividend', value=self.periodic_payment)
         stock_summary.insert(loc=9, column='Buyback', value=self.buyback)
         stock_summary.insert(loc=10, column='Last_fy', value=self.last_fy)
+        stock_summary['Gross_margin'] = self.avg_gross_margin
+        stock_summary['Past_sales_growth'] = self.geo_sales_growth
+        stock_summary['Ebit_margin'] = self.avg_ebit_margin
+        stock_summary['Past_ebit_growth'] = self.geo_ebit_growth
+        stock_summary['Net_margin'] = self.avg_net_margin
+        stock_summary['Past_netincome_growth'] = self.geo_ni_growth
 
         return stock_summary
 

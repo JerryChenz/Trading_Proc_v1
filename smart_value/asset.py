@@ -18,3 +18,6 @@ class Asset:
         self.invest_horizon = None
         self.unit_cost = None
         self.total_units = None
+
+
+"""More updates planned for more powerful Monitor features using pandas"""

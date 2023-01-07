@@ -35,7 +35,7 @@ def collect_data(tickers, source):
 
     # export the json files and export the summary in DataFrame
     print("merging data...")
-    merge_data()
+    # merge_data()
     print("csv exported.")
 
 
