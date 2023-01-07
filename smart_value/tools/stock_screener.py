@@ -62,20 +62,20 @@ def company_data(ticker, source):
             time.sleep(80)
             print(f're-try {ticker}')
             company_data(ticker, source)
-    except ValueError:
-        try_count += 1
-        if try_count < max_try:
-            print(f'external API error, will re-try {ticker} after 120 sec')
-            time.sleep(120)
-            print(f're-try {ticker}')
-            company_data(ticker, source)
-    except TypeError:
-        try_count += 1
-        if try_count < max_try:
-            print(f'external API error, will re-try {ticker} after 120 sec')
-            time.sleep(120)
-            print(f're-try {ticker}')
-            company_data(ticker, source)
+    # except ValueError:
+    #     try_count += 1
+    #     if try_count < max_try:
+    #         print(f'external API error, will re-try {ticker} after 120 sec')
+    #         time.sleep(120)
+    #         print(f're-try {ticker}')
+    #         company_data(ticker, source)
+    # except TypeError:
+    #     try_count += 1
+    #     if try_count < max_try:
+    #         print(f'external API error, will re-try {ticker} after 120 sec')
+    #         time.sleep(120)
+    #         print(f're-try {ticker}')
+    #         company_data(ticker, source)
 
 
 def merge_data():

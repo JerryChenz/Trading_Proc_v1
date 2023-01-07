@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from scipy import stats
 from datetime import datetime
 from yfinance import Ticker
@@ -22,16 +21,15 @@ class Financials:
         self.report_currency = self.stock_data.info['financialCurrency']
         self.next_earnings = pd.to_datetime(datetime.fromtimestamp(self.stock_data.info['mostRecentQuarter'])
                                             .strftime("%Y-%m-%d")) + pd.DateOffset(months=6)
+        self.avg_gross_margin = None
+        self.avg_ebit_margin = None
+        self.avg_net_margin = None
+        self.geo_sales_growth = None
+        self.geo_ebit_growth = None
+        self.geo_ni_growth = None
         self.annual_bs = self.get_balance_sheet("annual")
         self.quarter_bs = self.get_balance_sheet("quarter")
         self.income_statement = self.get_income_statement()
-        self.avg_gross_margin = self.income_statement['Gross_margin'].mean(axis=1)
-        print(self.avg_gross_margin)
-        self.geo_sales_growth = stats.gmean(self.income_statement.loc['TotalRevenue'], axis=1)
-        self.avg_ebit_margin = self.income_statement['Ebit_margin'].mean(axis=1)
-        self.geo_ebit_growth = stats.gmean(self.income_statement.loc['Ebit'], axis=1)
-        self.avg_net_margin = self.income_statement['Net_margin'].mean(axis=1)
-        self.geo_ni_growth = self.income_statement['NetIncomeCommonStockholders'].mean(axis=1)
         self.cash_flow = self.get_cash_flow()
         try:
             self.dividends = -int(self.cash_flow.loc['CommonStockDividendPaid'][0]) / self.shares
@@ -89,7 +87,7 @@ class Financials:
         is_df = clean_is.loc[is_index]
         # Ending of Cleaning: drop the dummy column after join
         is_df.drop('Dummy', inplace=True, axis=1)
-        is_df = is_df.transpose()
+        is_df = is_df.fillna(0).transpose()
         try:
             is_df['Gross_margin'] = is_df['CostOfRevenue'] / is_df['TotalRevenue'] * 100
             is_df['Gross_margin'] = is_df['Gross_margin'].astype(float).round(decimals=2)
@@ -110,7 +108,16 @@ class Financials:
         except ZeroDivisionError:
             is_df['Net_margin'] = 0
 
-        return is_df.fillna(0)
+        self.avg_gross_margin = is_df["Gross_margin"].mean()
+        self.avg_ebit_margin = is_df["Ebit_margin"].mean()
+        self.avg_net_margin = is_df["Net_margin"].mean()
+        self.geo_sales_growth = \
+            round(stats.gmean(is_df.iloc[::-1]['TotalRevenue'].pct_change().dropna()).astype(float) * 100, 2)
+        self.geo_ebit_growth = round(stats.gmean(is_df.iloc[::-1]['Ebit'].pct_change().dropna()).astype(float) * 100, 2)
+        self.geo_ni_growth = round(stats.gmean(is_df.iloc[::-1]['NetIncomeCommonStockholders']
+                                               .pct_change().dropna()).astype(float) * 100, 2)
+
+        return is_df.transpose()
 
     def get_cash_flow(self):
         """Returns a DataFrame with selected Cash flow statement data"""
