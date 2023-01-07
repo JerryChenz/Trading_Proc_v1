@@ -97,10 +97,10 @@ def merge_data():
          'LongTermDebtAndCapitalLeaseObligation', 'LongTermCapitalLeaseObligation',
          'TotalEquityGrossMinorityInterest', 'MinorityInterest', 'CashAndCashEquivalents',
          'OtherShortTermInvestments', 'InvestmentProperties', 'LongTermEquityInvestment',
-         'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'CostOfRevenue', 'GrossMargin',
-         'SellingGeneralAndAdministration', 'EBIT', 'EbitMargin', 'InterestExpense', 'NetIncomeCommonStockholders',
-         'NetMargin', 'Avg_Gross_margin', 'Avg_sales_growth', 'Avg_ebit_margin', 'Avg_ebit_growth',
-         'Avg_net_margin', 'Avg_NetIncome_growth',
+         'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'Avg_sales_growth', 'CostOfRevenue',
+         'GrossMargin', 'Avg_Gross_margin', 'SellingGeneralAndAdministration',
+         'EBIT', 'EbitMargin', 'Avg_ebit_margin', 'Avg_ebit_growth', 'InterestExpense',
+         'NetIncomeCommonStockholders', 'NetMargin', 'Avg_net_margin', 'Avg_NetIncome_growth',
          'Years_of_data']].set_index('Ticker')
     df.to_csv(screener_folder / 'screener_summary.csv')
 
