@@ -26,7 +26,7 @@ def collect_data(tickers, source):
     # Collect the company data and export in json
     for ticker in tickers:
         try:
-            company_data(ticker, source)
+            company_data(ticker, source, 0)
         except KeyError:
             print(f'{ticker} is not valid, skip')
             continue
@@ -39,15 +39,15 @@ def collect_data(tickers, source):
     print("csv exported.")
 
 
-def company_data(ticker, source):
+def company_data(ticker, source, attempt):
     """Collect the company data, then export json.
 
+    :param attempt: try_count
     :param ticker: collect the data using string ticker
     :param source: "yf" chooses yahoo finance
     """
 
     # external API error re-try
-    try_count = 0
     max_try = 10
 
     try:
@@ -55,28 +55,35 @@ def company_data(ticker, source):
         # export the summary
         new_row = company.current_summary().transpose()
         new_row.to_json(json_dir / f'{ticker} data.json')
-        time.sleep(0.5)
+        time.sleep(1.5)
     except IndexError:
-        try_count += 1
-        if try_count < max_try:
+        attempt += 1
+        if attempt < max_try:
             print(f'external API error, will re-try {ticker} after 80 sec')
             time.sleep(80)
             print(f're-try {ticker}')
-            company_data(ticker, source)
-    except ValueError:
-        try_count += 1
-        if try_count < max_try:
-            print(f'external API error, will re-try {ticker} after 120 sec')
-            time.sleep(120)
-            print(f're-try {ticker}')
-            company_data(ticker, source)
-    except TypeError:
-        try_count += 1
-        if try_count < max_try:
-            print(f'external API error, will re-try {ticker} after 120 sec')
-            time.sleep(120)
-            print(f're-try {ticker}')
-            company_data(ticker, source)
+            company_data(ticker, source, attempt)
+    # except ValueError:
+    #     attempt += 1
+    #     if attempt < max_try:
+    #         print(f'external API error, will re-try {ticker} after 120 sec')
+    #         time.sleep(120)
+    #         print(f're-try {ticker}')
+    #         company_data(ticker, source, attempt)
+    # except TypeError:
+    #     attempt += 1
+    #     if attempt < max_try:
+    #         print(f'external API error, will re-try {ticker} after 120 sec')
+    #         time.sleep(120)
+    #         print(f're-try {ticker}')
+    #         company_data(ticker, source, attempt)
+    # except AttributeError:
+    #     attempt += 1
+    #     if attempt < max_try:
+    #         print(f'external API error, will re-try {ticker} after 120 sec')
+    #         time.sleep(120)
+    #         print(f're-try {ticker}')
+    #         company_data(ticker, source, attempt)
 
 
 def merge_data():

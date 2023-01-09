@@ -18,8 +18,6 @@ class Financials:
         self.exchange = self.stock_data.info['exchange']
         self.shares = self.stock_data.info['sharesOutstanding']
         self.report_currency = self.stock_data.info['financialCurrency']
-        self.next_earnings = pd.to_datetime(datetime.fromtimestamp(self.stock_data.info['mostRecentQuarter'])
-                                            .strftime("%Y-%m-%d")) + pd.DateOffset(months=6)
         self.avg_gross_margin = None
         self.avg_ebit_margin = None
         self.avg_net_margin = None
@@ -31,6 +29,12 @@ class Financials:
         self.quarter_bs = self.get_balance_sheet("quarter")
         self.income_statement = self.get_income_statement()
         self.cash_flow = self.get_cash_flow()
+        if self.stock_data.info['mostRecentQuarter'] is None:
+            self.next_earnings = pd.to_datetime(datetime.fromtimestamp(self.annual_bs.columns[0])
+                                            .strftime("%Y-%m-%d")) + pd.DateOffset(months=6)
+        else:
+            self.next_earnings = pd.to_datetime(datetime.fromtimestamp(self.stock_data.info['mostRecentQuarter'])
+                                            .strftime("%Y-%m-%d")) + pd.DateOffset(months=6)
         try:
             self.dividends = -int(self.cash_flow.loc['CommonStockDividendPaid'][0]) / self.shares
         except ZeroDivisionError:
