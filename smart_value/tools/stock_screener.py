@@ -65,6 +65,7 @@ def company_data(ticker, source, attempt):
         success = True
         time.sleep(3)
         print(ticker + ' data added.')
+        return success
     except IndexError:
         attempt += 1
         if attempt < max_try:
@@ -93,8 +94,6 @@ def company_data(ticker, source, attempt):
             time.sleep(120)
             print(f're-try {ticker}, attempt {attempt}')
             company_data(ticker, source, attempt)
-    finally:
-        return success
 
 
 def merge_data():
