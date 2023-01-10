@@ -55,35 +55,35 @@ def company_data(ticker, source, attempt):
         # export the summary
         new_row = company.current_summary().transpose()
         new_row.to_json(json_dir / f'{ticker} data.json')
-        time.sleep(1.5)
+        time.sleep(3)
     except IndexError:
         attempt += 1
         if attempt < max_try:
             print(f'external API error, will re-try {ticker} after 80 sec')
             time.sleep(80)
-            print(f're-try {ticker}')
+            print(f're-try {ticker}, attempt {attempt}')
             company_data(ticker, source, attempt)
-    except ValueError:
-        attempt += 1
-        if attempt < max_try:
-            print(f'external API error, will re-try {ticker} after 120 sec')
-            time.sleep(120)
-            print(f're-try {ticker}')
-            company_data(ticker, source, attempt)
-    except TypeError:
-        attempt += 1
-        if attempt < max_try:
-            print(f'external API error, will re-try {ticker} after 120 sec')
-            time.sleep(120)
-            print(f're-try {ticker}')
-            company_data(ticker, source, attempt)
-    except AttributeError:
-        attempt += 1
-        if attempt < max_try:
-            print(f'external API error, will re-try {ticker} after 120 sec')
-            time.sleep(120)
-            print(f're-try {ticker}')
-            company_data(ticker, source, attempt)
+    # except ValueError:
+    #     attempt += 1
+    #     if attempt < max_try:
+    #         print(f'external API error, will re-try {ticker} after 120 sec')
+    #         time.sleep(120)
+    #         print(f're-try {ticker}, attempt {attempt}')
+    #         company_data(ticker, source, attempt)
+    # except TypeError:
+    #     attempt += 1
+    #     if attempt < max_try:
+    #         print(f'external API error, will re-try {ticker} after 120 sec')
+    #         time.sleep(120)
+    #         print(f're-try {ticker}, attempt {attempt}')
+    #         company_data(ticker, source, attempt)
+    # except AttributeError:
+    #     attempt += 1
+    #     if attempt < max_try:
+    #         print(f'external API error, will re-try {ticker} after 120 sec')
+    #         time.sleep(120)
+    #         print(f're-try {ticker}, attempt {attempt}')
+    #         company_data(ticker, source, attempt)
 
 
 def merge_data():

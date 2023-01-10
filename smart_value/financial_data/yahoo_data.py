@@ -30,8 +30,8 @@ class Financials:
         self.income_statement = self.get_income_statement()
         self.cash_flow = self.get_cash_flow()
         if self.stock_data.info['mostRecentQuarter'] is None:
-            self.next_earnings = pd.to_datetime(datetime.fromtimestamp(self.annual_bs.columns[0])
-                                            .strftime("%Y-%m-%d")) + pd.DateOffset(months=6)
+            self.next_earnings = pd.to_datetime(datetime.fromtimestamp(self.stock_data.info['nextFiscalYearEnd'])
+                                                .strftime("%Y-%m-%d")) - pd.DateOffset(months=6)
         else:
             self.next_earnings = pd.to_datetime(datetime.fromtimestamp(self.stock_data.info['mostRecentQuarter'])
                                             .strftime("%Y-%m-%d")) + pd.DateOffset(months=6)
