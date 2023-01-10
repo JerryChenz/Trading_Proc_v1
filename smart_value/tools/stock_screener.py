@@ -21,22 +21,27 @@ def collect_data(tickers, source):
 
     :param tickers: a list of tickers to screen through
     :param source: "yf" chooses yahoo finance
+    :return failed_list
     """
 
+    failed_list = []
+
     # Collect the company data and export in json
-    for ticker in tickers:
+    while tickers:
+        ticker = tickers.pop()
         try:
-            company_data(ticker, source, 0)
+            no_error = company_data(ticker, source, 0)
+            if not no_error:
+                failed_list.append(ticker)
+                print(f"failed list: {failed_list}")
         except KeyError:
             print(f'{ticker} is not valid, skip')
             continue
-
-        print(ticker + ' data added.')
-
     # export the json files and export the summary in DataFrame
     print("merging data...")
     merge_data()
     print("csv exported.")
+    return failed_list
 
 
 def company_data(ticker, source, attempt):
@@ -45,17 +50,21 @@ def company_data(ticker, source, attempt):
     :param attempt: try_count
     :param ticker: collect the data using string ticker
     :param source: "yf" chooses yahoo finance
+    :return False if the call failed, True otherwise
     """
 
     # external API error re-try
-    max_try = 10
+    max_try = 3
+    success = False
 
     try:
         company = smart_value.stock.Stock(ticker, source)
         # export the summary
         new_row = company.current_summary().transpose()
         new_row.to_json(json_dir / f'{ticker} data.json')
+        success = True
         time.sleep(3)
+        print(ticker + ' data added.')
     except IndexError:
         attempt += 1
         if attempt < max_try:
@@ -84,6 +93,8 @@ def company_data(ticker, source, attempt):
             time.sleep(120)
             print(f're-try {ticker}, attempt {attempt}')
             company_data(ticker, source, attempt)
+    finally:
+        return success
 
 
 def merge_data():

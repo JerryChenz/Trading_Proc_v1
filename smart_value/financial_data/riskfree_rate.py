@@ -11,6 +11,7 @@ def risk_free_rate(country):
 
     if country == 'cn':
         pass
+        # Todo: China 10 Year Treasury Yield
     else:
         fred = Fred(api_key=fred_api_key)
         return fred.get_series('DGS10')  # US 10 Year Treasury Yield

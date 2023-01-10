@@ -60,6 +60,8 @@ class Monitor:
         self.opportunities = []
         self.load_opportunities()
 
+    # Todo: Analysis using Pandas
+
     def load_opportunities(self):
         """Load the asset information from the opportunities folder"""
 

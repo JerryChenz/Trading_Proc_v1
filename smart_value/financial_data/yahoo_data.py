@@ -115,11 +115,22 @@ class Financials:
         self.avg_gross_margin = is_df["Gross_margin"].mean()
         self.avg_ebit_margin = is_df["Ebit_margin"].mean()
         self.avg_net_margin = is_df["Net_margin"].mean()
-        self.avg_sales_growth = \
-            round((is_df.iloc[::-1]['TotalRevenue'].pct_change().dropna()).mean().astype(float) * 100, 2)
-        self.avg_ebit_growth = round((is_df.iloc[::-1]['Ebit'].pct_change().dropna()).mean().astype(float) * 100, 2)
-        self.avg_ni_growth = \
-            round((is_df.iloc[::-1]['NetIncomeCommonStockholders'].pct_change().dropna()).mean().astype(float) * 100, 2)
+        try:
+            self.avg_sales_growth = round((is_df.iloc[::-1]['TotalRevenue']
+                                           .pct_change().dropna()).mean().astype(float) * 100, 2)
+        except AttributeError:
+            # empty TotalRevenue bug
+            self.avg_sales_growth = 0
+        try:
+            self.avg_ebit_growth = round((is_df.iloc[::-1]['Ebit']
+                                          .pct_change().dropna()).mean().astype(float) * 100, 2)
+        except AttributeError:
+            self.avg_ebit_growth = 0
+        try:
+            self.avg_ni_growth = round((is_df.iloc[::-1]['NetIncomeCommonStockholders']
+                                        .pct_change().dropna()).mean().astype(float) * 100, 2)
+        except AttributeError:
+            self.avg_ni_growth = 0
         self.years_of_data = len(is_df['TotalRevenue'])
 
         return is_df.transpose()
