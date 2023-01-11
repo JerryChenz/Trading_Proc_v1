@@ -55,17 +55,15 @@ def company_data(ticker, source, attempt):
 
     # external API error re-try
     max_try = 3
-    success = False
 
     try:
         company = smart_value.stock.Stock(ticker, source)
         # export the summary
         new_row = company.current_summary().transpose()
         new_row.to_json(json_dir / f'{ticker} data.json')
-        success = True
         time.sleep(3)
         print(ticker + ' data added.')
-        return success
+        return True
     except IndexError:
         attempt += 1
         if attempt < max_try:
@@ -73,6 +71,9 @@ def company_data(ticker, source, attempt):
             time.sleep(80)
             print(f're-try {ticker}, attempt {attempt}')
             company_data(ticker, source, attempt)
+        else:
+            print(f'external API error, {ticker} failed after {attempt} attempts')
+            return False
     except ValueError:
         attempt += 1
         if attempt < max_try:
@@ -80,6 +81,9 @@ def company_data(ticker, source, attempt):
             time.sleep(120)
             print(f're-try {ticker}, attempt {attempt}')
             company_data(ticker, source, attempt)
+        else:
+            print(f'external API error, {ticker} failed after {attempt} attempts')
+            return False
     except TypeError:
         attempt += 1
         if attempt < max_try:
@@ -87,6 +91,9 @@ def company_data(ticker, source, attempt):
             time.sleep(120)
             print(f're-try {ticker}, attempt {attempt}')
             company_data(ticker, source, attempt)
+        else:
+            print(f'external API error, {ticker} failed after {attempt} attempts')
+            return False
     except AttributeError:
         attempt += 1
         if attempt < max_try:
@@ -94,6 +101,9 @@ def company_data(ticker, source, attempt):
             time.sleep(120)
             print(f're-try {ticker}, attempt {attempt}')
             company_data(ticker, source, attempt)
+        else:
+            print(f'external API error, {ticker} failed after {attempt} attempts')
+            return False
 
 
 def merge_data():
