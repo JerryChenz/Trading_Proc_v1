@@ -31,7 +31,9 @@ def collect_data(tickers, source):
         ticker = tickers.pop()
         try:
             no_error = company_data(ticker, source, 0)
-            if not no_error:
+            if no_error or no_error is None:
+                print(ticker + ' data added.')
+            else:
                 failed_list.append(ticker)
                 print(f"failed list: {failed_list}")
         except KeyError:
@@ -62,11 +64,10 @@ def company_data(ticker, source, attempt):
         new_row = company.current_summary().transpose()
         new_row.to_json(json_dir / f'{ticker} data.json')
         time.sleep(3)
-        print(ticker + ' data added.')
         return True
     except IndexError:
         attempt += 1
-        if attempt < max_try:
+        if attempt <= max_try:
             print(f'external API error, will re-try {ticker} after 80 sec')
             time.sleep(80)
             print(f're-try {ticker}, attempt {attempt}')
@@ -76,7 +77,7 @@ def company_data(ticker, source, attempt):
             return False
     except ValueError:
         attempt += 1
-        if attempt < max_try:
+        if attempt <= max_try:
             print(f'external API error, will re-try {ticker} after 120 sec')
             time.sleep(120)
             print(f're-try {ticker}, attempt {attempt}')
@@ -86,7 +87,7 @@ def company_data(ticker, source, attempt):
             return False
     except TypeError:
         attempt += 1
-        if attempt < max_try:
+        if attempt <= max_try:
             print(f'external API error, will re-try {ticker} after 120 sec')
             time.sleep(120)
             print(f're-try {ticker}, attempt {attempt}')
@@ -96,7 +97,7 @@ def company_data(ticker, source, attempt):
             return False
     except AttributeError:
         attempt += 1
-        if attempt < max_try:
+        if attempt <= max_try:
             print(f'external API error, will re-try {ticker} after 120 sec')
             time.sleep(120)
             print(f're-try {ticker}, attempt {attempt}')
