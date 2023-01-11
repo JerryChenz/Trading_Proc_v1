@@ -64,7 +64,6 @@ def company_data(ticker, source, attempt):
         new_row = company.current_summary().transpose()
         new_row.to_json(json_dir / f'{ticker} data.json')
         time.sleep(3)
-        return True
     except IndexError:
         attempt += 1
         if attempt <= max_try:
@@ -105,6 +104,8 @@ def company_data(ticker, source, attempt):
         else:
             print(f'external API error, {ticker} failed after {attempt} attempts')
             return False
+    else:
+        return True
 
 
 def merge_data():
