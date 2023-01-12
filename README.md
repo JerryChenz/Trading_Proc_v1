@@ -26,7 +26,6 @@ Stock idea Generation and Analysis Methodology
 
 Workflow
 =========================
-TBA
 ![](https://github.com/JerryChenz/InvestmentManagementOpen/blob/main/screenshoots/Investment_Analysis_Workflow.jpg)
 
 Preview
