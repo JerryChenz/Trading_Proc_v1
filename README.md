@@ -24,9 +24,10 @@ Stock idea Generation and Analysis Methodology
 3. Use Monitor to track and act on the opportunities
 ![](https://github.com/JerryChenz/InvestmentManagementOpen/blob/main/screenshoots/idea_funnel_1.PNG)
 
-Architecture
+Workflow
 =========================
 TBA
+![](https://github.com/JerryChenz/InvestmentManagementOpen/blob/main/screenshoots/Investment_Analysis_Workflow.jpg)
 
 Preview
 =========================
