@@ -118,20 +118,8 @@ def merge_data():
     for file in files:
         data = pd.read_json(file)  # read data frame from json file
         dfs.append(data.transpose())  # append the data frame to the list
-
     df = pd.concat(dfs, ignore_index=False)  # concatenate all the data frames in the list.
-    df = df[
-        ['Ticker', 'Name', 'Exchange', 'Price', 'Price_currency', 'Shares', 'Reporting_Currency', 'Fx_rate',
-         'Dividend', 'Buyback', 'Last_fy', 'TotalAssets', 'CurrentAssets', 'CurrentLiabilities',
-         'CurrentDebtAndCapitalLeaseObligation', 'CurrentCapitalLeaseObligation',
-         'LongTermDebtAndCapitalLeaseObligation', 'LongTermCapitalLeaseObligation',
-         'TotalEquityGrossMinorityInterest', 'MinorityInterest', 'CashAndCashEquivalents',
-         'OtherShortTermInvestments', 'InvestmentProperties', 'LongTermEquityInvestment',
-         'InvestmentinFinancialAssets', 'NetPPE', 'TotalRevenue', 'Avg_sales_growth', 'CostOfRevenue',
-         'GrossMargin', 'Avg_Gross_margin', 'SellingGeneralAndAdministration',
-         'EBIT', 'EbitMargin', 'Avg_ebit_margin', 'Avg_ebit_growth', 'InterestExpense',
-         'NetIncomeCommonStockholders', 'NetMargin', 'Avg_net_margin', 'Avg_NetIncome_growth',
-         'Years_of_data']].set_index('Ticker')
+    df = df.set_index('Ticker')
     df.to_csv(screener_folder / 'screener_summary.csv')
 
 # Step 2: filter done using ipynb with Jupyter Notebook
