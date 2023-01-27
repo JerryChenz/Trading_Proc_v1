@@ -105,9 +105,9 @@ class Stock(Asset):
         stock_summary.insert(loc=9, column='Dividend', value=self.periodic_payment)
         stock_summary.insert(loc=10, column='Buyback', value=self.buyback)
         stock_summary.insert(loc=11, column='Last_fy', value=self.last_fy)
-        stock_summary['CFO'] = self.cf_df['OperatingCashFlow']
-        stock_summary['CFI'] = self.cf_df['InvestingCashFlow']
-        stock_summary['CFF'] = self.cf_df['FinancingCashFlow']
+        stock_summary['CFO'] = self.cf_df.loc['OperatingCashFlow']
+        stock_summary['CFI'] = self.cf_df.loc['InvestingCashFlow']
+        stock_summary['CFF'] = self.cf_df.loc['FinancingCashFlow']
         stock_summary['Avg_Gross_margin'] = self.avg_gross_margin
         stock_summary['Avg_sales_growth'] = self.avg_sales_growth
         stock_summary['Avg_ebit_margin'] = self.avg_ebit_margin
