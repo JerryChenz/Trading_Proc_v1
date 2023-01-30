@@ -105,12 +105,13 @@ def update_data(data_sheet, stock):
     """
 
     data_sheet.range('C3').value = stock.last_fy
-    if len(str(stock.is_df.iloc[0, 0])) <= 6:
+    data_digits = len(str(int(stock.is_df.iloc[0, 0])))
+    if data_digits <= 6:
         report_unit = 1
-    elif len(str(stock.is_df.iloc[0, 0])) <= 9:
+    elif data_digits <= 9:
         report_unit = 1000
     else:
-        report_unit = int((len(str(stock.is_df.iloc[0, 0])) - 9) / 3 + 0.99) * 1000
+        report_unit = int((data_digits - 9) / 3 + 0.99) * 1000
     data_sheet.range('C4').value = report_unit
     # load income statement and cash flow statement
     for i in range(len(stock.is_df.columns)):
@@ -120,9 +121,9 @@ def update_data(data_sheet, stock):
         data_sheet.range((18, i + 3)).value = int(stock.is_df.iloc[3, i] / report_unit)
         data_sheet.range((19, i + 3)).value = int(stock.is_df.iloc[4, i] / report_unit)
         # CommonStockDividendPaid
-        data_sheet.range((41, i + 3)).value = int(-stock.cf_df.iloc[0, i] / report_unit)
+        data_sheet.range((41, i + 3)).value = int(-stock.cf_df.iloc[3, i] / report_unit)
         # RepurchaseOfCapitalStock
-        data_sheet.range((42, i + 3)).value = int(-stock.cf_df.iloc[1, i] / report_unit)
+        data_sheet.range((42, i + 3)).value = int(-stock.cf_df.iloc[4, i] / report_unit)
     # load balance sheet
     for j in range(1, len(stock.annual_bs.columns)):
         # CurrentAssets

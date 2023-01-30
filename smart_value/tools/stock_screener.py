@@ -29,16 +29,17 @@ def collect_data(tickers, source):
     # Collect the company data and export in json
     while tickers:
         ticker = tickers.pop()
-        # try:
-        no_error = company_data(ticker, source, 0)
-        if no_error or no_error is None:
-            print(ticker + ' data added.')
-        else:
-            failed_list.append(ticker)
-            print(f"failed list: {failed_list}")
-        # except KeyError:
-        #     print(f'{ticker} is not valid, skip')
-        #     continue
+        try:
+            no_error = company_data(ticker, source, 0)
+            if no_error or no_error is None:
+
+                print(ticker + ' data added.')
+            else:
+                failed_list.append(ticker)
+                print(f"failed list: {failed_list}")
+        except KeyError:
+            print(f'{ticker} is not valid, skip')
+            continue
     # export the json files and export the summary in DataFrame
     print("merging data...")
     merge_data()
